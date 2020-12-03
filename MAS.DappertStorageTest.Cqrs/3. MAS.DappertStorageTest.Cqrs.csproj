@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Insert\" />
+    <Folder Include="Update\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MAS.DapperStorage.Test.Models\1. MAS.DapperStorageTest.Models.csproj" />
+    <ProjectReference Include="..\MAS.DapperStrorageTest.Infrastructure\2. MAS.DapperStorageTest.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
