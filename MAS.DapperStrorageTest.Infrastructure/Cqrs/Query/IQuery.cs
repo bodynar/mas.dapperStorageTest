@@ -1,4 +1,4 @@
 ﻿namespace MAS.DapperStorageTest.Infrastructure.Cqrs
 {
-    public interface IQuery<TResult>: ICqrsMember { }
+    public interface IQuery<TResult> { }
 }

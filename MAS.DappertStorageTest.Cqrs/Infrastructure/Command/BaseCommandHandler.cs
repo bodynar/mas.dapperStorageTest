@@ -10,25 +10,12 @@
     {
         protected Type CommandType { get; }
 
-        public BaseCommandHandler(IResolver resolver)
-            : base(resolver)
+        public BaseCommandHandler(IDbConnectionFactory dbConnectionFactory)
+            : base(dbConnectionFactory)
         {
             CommandType = typeof(TCommand);
         }
 
-        public void Handle(TCommand command)
-        {
-            var isValidEntityName = IsValidEntityName(command.EntityName);
-
-            if (isValidEntityName)
-            {
-                Proceed(command);
-            } else
-            {
-                throw new DatabaseQueryException($"{command.EntityName} isn't presented in database.");
-            }
-        }
-
-        public abstract void Proceed(TCommand command);
+        public abstract void Handle(TCommand command);
     }
 }

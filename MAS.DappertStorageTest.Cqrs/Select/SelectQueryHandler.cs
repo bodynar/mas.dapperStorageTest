@@ -6,12 +6,12 @@
 
     public class SelectQueryHandler : BaseQueryHandler<SelectQuery, WrappedEntity>
     {
-        public SelectQueryHandler(IResolver resolver)
-            : base(resolver)
+        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory)
+            : base(dbConnectionFactory)
         {
         }
 
-        public override WrappedEntity Proceed(SelectQuery query)
+        public override WrappedEntity Handle(SelectQuery query)
         {
             var tableName = GetTableName(query.EntityName);
 

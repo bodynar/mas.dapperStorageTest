@@ -5,20 +5,18 @@
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
-    using Microsoft.Data.SqlClient;
-
     public class DeleteCommandHandler : BaseCommandHandler<DeleteCommand>
     {
-        public DeleteCommandHandler(IResolver resolver)
-            : base(resolver)
+        public DeleteCommandHandler(IDbConnectionFactory dbConnectionFactory)
+            : base(dbConnectionFactory)
         {
         }
 
-        public override void Proceed(DeleteCommand command)
+        public override void Handle(DeleteCommand command)
         {
             var tableName = GetTableName(command.EntityName);
 
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = DbConnectionFactory.CreateDbConnection())
             {
                 var sqlQuery = $"DELETE FROM {tableName} WHERE Id = @id";
                 connection.Execute(sqlQuery, new { command.EntityId });

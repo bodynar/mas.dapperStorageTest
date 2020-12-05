@@ -2,7 +2,6 @@
 {
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
-    using MAS.DappertStorageTest.Cqrs;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     using Microsoft.Extensions.Configuration;
@@ -17,9 +16,7 @@
 
             // TODO
             container.Register(typeof(IResolver), typeof(Resolver), Lifestyle.Singleton);
-            container.Register(typeof(IConnectionData), typeof(ConnectionData), Lifestyle.Singleton);
-
-            container.Register<IConnectionData>(() => new ConnectionData(connectionString), Lifestyle.Singleton);
+            container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString), Lifestyle.Singleton);
 
             container.Register(
                 typeof(IQueryHandler<,>),

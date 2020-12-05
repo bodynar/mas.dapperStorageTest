@@ -5,38 +5,17 @@
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
-    using MAS.DapperStorageTest.Infrastructure.Cqrs;
     using MAS.DapperStorageTest.Models;
 
     public class BaseCqrsHandler
     {
-        #region Private fields
-
-        private Lazy<IQueryProcessor> _queryProcessor
-            => new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>);
-
-        private Lazy<ICommandProcessor> _commandProcessor
-            => new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>);
-        
         private IEnumerable<string> DeclaredEntities { get; }
 
-        #endregion
+        protected IDbConnectionFactory DbConnectionFactory { get; }
 
-        protected IResolver Resolver { get; }
-
-        protected IQueryProcessor QueryProcessor
-            => _queryProcessor.Value;
-
-        protected ICommandProcessor CommandProcessor
-            => _commandProcessor.Value;
-
-        protected string ConnectionString { get; }
-
-        public BaseCqrsHandler(IResolver resolver)
+        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory)
         {
-            Resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
-
-            ConnectionString = Resolver.Resolve<IConnectionData>()?.ConnectionString ?? throw new ConfigurationException(nameof(IConnectionData));
+            DbConnectionFactory = dbConnectionFactory;
             DeclaredEntities = GetDeclaredEntities();
         }
 
