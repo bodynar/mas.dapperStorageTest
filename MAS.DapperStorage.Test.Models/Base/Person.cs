@@ -1,4 +1,4 @@
-﻿namespace MAS.DapperStorageTest.Models.Base
+﻿namespace MAS.DapperStorageTest.Models
 {
     using System;
 

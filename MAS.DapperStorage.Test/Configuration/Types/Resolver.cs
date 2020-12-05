@@ -6,7 +6,7 @@
 
     using SimpleInjector;
 
-    public class Resolver : IResolver
+    internal class Resolver : IResolver
     {
         private Container Container { get; }
 

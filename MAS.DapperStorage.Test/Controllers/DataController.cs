@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Models;
 
     using Microsoft.AspNetCore.Mvc;
