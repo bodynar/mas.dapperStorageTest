@@ -22,25 +22,23 @@
         {
             EnsureEntityNameIsValid(query.EntityName);
 
-            var tableName = GetTableName(query.EntityName);
-
             Entity entity =
                 query.EntityId.HasValue
-                    ? GetById(query, tableName)
-                    : GetByFilters(query, tableName);
+                    ? GetById(query)
+                    : GetByFilters(query);
 
             return entity.Wrap();
         }
 
-        private Entity GetById(SelectQuery query, string tableName)
+        private Entity GetById(SelectQuery query)
         {
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                return connection.QueryFirstOrDefault<Entity>($"SELECT * FROM [${tableName}] WHERE [Id] = @id", new { Id = query.EntityId });
+                return connection.QueryFirstOrDefault<Entity>($"SELECT * FROM [${query.EntityName}] WHERE [Id] = @id", new { Id = query.EntityId });
             }
         }
 
-        private Entity GetByFilters(SelectQuery query, string tableName)
+        private Entity GetByFilters(SelectQuery query)
         {
             EnsureFieldsAreValidForEntity(query.EntityName, query.Filters.Keys);
 
@@ -55,7 +53,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                return connection.QueryFirstOrDefault<Entity>($"SELECT * FROM [{tableName}] WHERE {string.Join(", ", whereSqlParts)}", arguments);
+                return connection.QueryFirstOrDefault<Entity>($"SELECT * FROM [{query.EntityName}] WHERE {string.Join(", ", whereSqlParts)}", arguments);
             }
         }
     }

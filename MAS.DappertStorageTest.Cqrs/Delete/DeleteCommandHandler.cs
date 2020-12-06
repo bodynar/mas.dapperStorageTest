@@ -16,11 +16,9 @@
         {
             EnsureEntityNameIsValid(command.EntityName);
 
-            var tableName = GetTableName(command.EntityName);
-
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                var sqlQuery = $"DELETE FROM {tableName} WHERE Id = @Id";
+                var sqlQuery = $"DELETE FROM {command.EntityName} WHERE Id = @Id";
                 connection.Execute(sqlQuery, new { Id = command.EntityId });
             }
         }

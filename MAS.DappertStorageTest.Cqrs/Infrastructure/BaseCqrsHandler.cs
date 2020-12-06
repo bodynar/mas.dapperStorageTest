@@ -41,9 +41,6 @@
             }
         }
 
-        protected string GetTableName(string entityName)
-            => $"{entityName}s";
-
         #endregion
 
         #region Not public API
@@ -58,7 +55,8 @@
             return typeof(EntityMarkerAttribute).Assembly
                 .GetTypes()
                 .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
-                .Select(x => x.Name);
+                .Select(x => x.Name)
+                .ToList();
         }
 
         private IEnumerable<string> GetNotValidFieldsForEntity(string entityName, IEnumerable<string> fieldNames)
