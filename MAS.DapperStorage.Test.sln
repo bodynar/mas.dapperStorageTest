@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "1. MAS.DapperStorageTest.Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3. MAS.DappertStorageTest.Cqrs", "MAS.DappertStorageTest.Cqrs\3. MAS.DappertStorageTest.Cqrs.csproj", "{60D6504E-D89E-4354-A79B-9A10491F1022}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2. MAS.DapperStorageTest.Infrastructure", "MAS.DapperStrorageTest.Infrastructure\2. MAS.DapperStorageTest.Infrastructure.csproj", "{7D3096B8-06EF-4CCA-8CA4-9E01435A5D81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2. MAS.DapperStorageTest.Infrastructure", "MAS.DapperStrorageTest.Infrastructure\2. MAS.DapperStorageTest.Infrastructure.csproj", "{7D3096B8-06EF-4CCA-8CA4-9E01435A5D81}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C837083A-9312-42F7-8AE1-854EACE7B348}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution items", "0. Solution items", "{6A7EE1DE-80A4-43E8-BE2E-01778CF34C50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{7D3096B8-06EF-4CCA-8CA4-9E01435A5D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D3096B8-06EF-4CCA-8CA4-9E01435A5D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D3096B8-06EF-4CCA-8CA4-9E01435A5D81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C837083A-9312-42F7-8AE1-854EACE7B348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C837083A-9312-42F7-8AE1-854EACE7B348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C837083A-9312-42F7-8AE1-854EACE7B348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C837083A-9312-42F7-8AE1-854EACE7B348}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C837083A-9312-42F7-8AE1-854EACE7B348} = {6A7EE1DE-80A4-43E8-BE2E-01778CF34C50}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECBC58C1-E090-4C9A-A683-4C4113BA889F}

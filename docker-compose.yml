@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=passWord11
+
+  mas.dapperstoragetest:
+    image: ${DOCKER_REGISTRY-}masdapperstoragetest
+    build:
+      context: .
+      dockerfile: MAS.DapperStorage.Test/Dockerfile
+    depends_on:
+      - db
