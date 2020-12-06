@@ -1,5 +1,7 @@
 ﻿namespace MAS.DapperStorageTest.Configuration
 {
+    using MAS.DapperStorageTest.Infrastructure;
+
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +21,8 @@
                             .AddControllerActivation()
                     )
             ;
+
+            services.AddSingleton<IDbConnectionFactory>((_) => new DbConnectionFactory(connectionString));
         }
     }
 }
