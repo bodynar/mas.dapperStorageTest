@@ -1,13 +1,12 @@
 ﻿namespace MAS.DapperStorageTest.Controllers
 {
     using System;
-    using System.Collections.Generic;
 
-    using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.Cqrs;
     using MAS.DapperStorageTest.Models;
+    using MAS.DappertStorageTest.Cqrs;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -15,57 +14,47 @@
     [Consumes("application/json")]
     public class DataController : ControllerBase
     {
-        private ILogger<DataController> Logger { get; }
+        public ICommandProcessor CommandProcessor { get; }
 
-        public IResolver Resolver { get; }
+        public IQueryProcessor QueryProcessor { get; }
 
-        public DataController(
-            ILogger<DataController> logger,
-            IResolver resolver
-        )
+        public DataController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor)
         {
-            Logger = logger;
-            Resolver = resolver;
+            CommandProcessor = commandProcessor;
+            QueryProcessor = queryProcessor;
         }
 
         [HttpGet]
-        public string Get()
-            => "Hello world";
-
-        [HttpGet("[action]")]
-        public IEnumerable<object> Entities([FromQuery] string entityName, int? skip = null, int? count = null)
-        {
-            Logger.LogDebug($"{nameof(Entities)} called. Params: \"{entityName}\".");
-
-            EnsureNotNull(entityName, nameof(entityName));
-
-            if (skip.HasValue || count.HasValue)
-            {
-                var isDefinedBoth = skip.HasValue && count.HasValue;
-
-                if (!isDefinedBoth)
-                {
-                    throw new ArgumentException("");
-                }
-            }
-
-            IEnumerable<object> result = null;
-
-            Logger.LogDebug($"{nameof(Entities)} evaluated. Params: \"{entityName}\". Result: \"{string.Join(" ,", result)}\"");
-
-            return result;
-        }
+        public string Index()
+            => nameof(DataController);
 
         [HttpPost("[action]")]
-        public Guid Add([FromBody]AddEntityModel addEntityModel)
+        public Guid Insert([FromBody] InsertRequest insertRequest)
         {
+            EnsureNotNull(insertRequest, nameof(insertRequest));
+
+            var command = new InsertCommand(insertRequest.EntityName, insertRequest.Values);
+            CommandProcessor.Execute(command);
+
             return Guid.Empty;
         }
+
+        [HttpGet("[action]")]
+        public string Select([FromBody]SelectRequest selectRequest)
+        {
+            EnsureNotNull(selectRequest, nameof(selectRequest));
+
+            var query = new SelectQuery(selectRequest.EntityName, selectRequest.Fields, selectRequest.EntityId, selectRequest.Filters);
+            var result = QueryProcessor.Execute(query);
+
+            return result.ToString();
+        }
+           
 
         private static void EnsureNotNull<TValue>(TValue value, string paramName)
             where TValue : class
         {
-            if (value == null || value == default)
+            if (value == null)
             {
                 throw new ArgumentNullException(paramName);
             }
