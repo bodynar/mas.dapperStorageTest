@@ -14,12 +14,14 @@
 
         public override void Handle(DeleteCommand command)
         {
+            EnsureEntityNameIsValid(command.EntityName);
+
             var tableName = GetTableName(command.EntityName);
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                var sqlQuery = $"DELETE FROM {tableName} WHERE Id = @id";
-                connection.Execute(sqlQuery, new { command.EntityId });
+                var sqlQuery = $"DELETE FROM {tableName} WHERE Id = @Id";
+                connection.Execute(sqlQuery, new { Id = command.EntityId });
             }
         }
     }
