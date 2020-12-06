@@ -19,13 +19,39 @@
             DeclaredEntities = GetDeclaredEntities();
         }
 
-        protected bool IsValidEntityName(string entityName)
+        #region Protected members
+
+        protected void EnsureFieldsAreValidForEntity(string entityName, IEnumerable<string> fieldNames)
         {
-            return DeclaredEntities.Contains(entityName);
+            var notValidFields = GetNotValidFieldsForEntity(entityName, fieldNames);
+
+            if (notValidFields.Any())
+            {
+                throw new DatabaseOperationException($"Entity name \"{entityName}\" does not contains these fields: [{string.Join(", ", notValidFields)}].");
+            }
+        }
+
+        protected void EnsureEntityNameIsValid(string entityName)
+        {
+            var isValidEntity = IsValidEntityName(entityName);
+            
+            if (!isValidEntity)
+            {
+                throw new DatabaseOperationException($"Entity name \"{entityName}\" is not valid or isn't presented in database.");
+            }
         }
 
         protected string GetTableName(string entityName)
             => $"{entityName}s";
+
+        #endregion
+
+        #region Not public API
+
+        private bool IsValidEntityName(string entityName)
+        {
+            return DeclaredEntities.Contains(entityName);
+        }
 
         private IEnumerable<string> GetDeclaredEntities()
         {
@@ -34,5 +60,21 @@
                 .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
                 .Select(x => x.Name);
         }
+
+        private IEnumerable<string> GetNotValidFieldsForEntity(string entityName, IEnumerable<string> fieldNames)
+        {
+            var entity = typeof(EntityMarkerAttribute).Assembly
+                .GetTypes()
+                .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
+                .FirstOrDefault(type => type.Name == entityName);
+
+            var propertyNames = entity
+                .GetProperties()
+                .Select(x => x.Name);
+
+            return fieldNames.Where(fieldName => !propertyNames.Contains(fieldName));
+        }
+
+        #endregion
     }
 }
