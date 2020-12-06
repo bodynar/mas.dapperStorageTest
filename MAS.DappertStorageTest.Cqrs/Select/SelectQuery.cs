@@ -1,20 +1,28 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
     using MAS.DapperStorageTest.Infrastructure.Models;
 
-    public class SelectQuery: IQuery<WrappedEntity>
+    public class SelectQuery : IQuery<WrappedEntity>
     {
-        public Guid Id { get; }
+        public string EntityName { get; set; }
 
-        public string EntityName { get; }
+        public IEnumerable<string> Fields { get; }
 
-        public SelectQuery(Guid id, string entityName)
+        public Guid? EntityId { get; }
+
+        public IDictionary<string, string> Filters { get; }
+
+        public SelectQuery(string entityName, IEnumerable<string> fields, Guid? entityId, IDictionary<string, string> filters)
         {
-            Id = id;
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
+            Fields = fields ?? Enumerable.Empty<string>();
+            EntityId = entityId;
+            Filters = filters;
         }
     }
 }
