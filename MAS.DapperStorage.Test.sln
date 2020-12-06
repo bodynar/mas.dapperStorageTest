@@ -14,6 +14,9 @@ EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C837083A-9312-42F7-8AE1-854EACE7B348}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution items", "0. Solution items", "{6A7EE1DE-80A4-43E8-BE2E-01778CF34C50}"
+	ProjectSection(SolutionItems) = preProject
+		DbInit.sql = DbInit.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
