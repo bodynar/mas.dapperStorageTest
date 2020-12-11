@@ -7,6 +7,11 @@
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
     using MAS.DapperStorageTest.Infrastructure.Models;
 
+    //public enum ComparisonType
+    //{
+
+    //}
+
     public class SelectQuery : IQuery<WrappedEntity>
     {
         public string EntityName { get; set; }
@@ -25,4 +30,13 @@
             Filters = filters;
         }
     }
+
+    //public class SelectQueryFilter
+    //{
+    //    public string FieldName { get; }
+
+    //    public string FilterValue { get; }
+
+    //    public ComparisonType ComparisonType { get; }
+    //}
 }
