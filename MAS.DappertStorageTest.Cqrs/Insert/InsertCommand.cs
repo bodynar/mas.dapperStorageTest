@@ -9,9 +9,9 @@
     {
         public string EntityName { get; }
 
-        public IDictionary<string, object> PropertyValues { get; }
+        public IDictionary<string, string> PropertyValues { get; }
 
-        public InsertCommand(string entityName, IDictionary<string, object> propertyValues)
+        public InsertCommand(string entityName, IDictionary<string, string> propertyValues)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             PropertyValues = propertyValues ?? throw new ArgumentNullException(nameof(propertyValues));

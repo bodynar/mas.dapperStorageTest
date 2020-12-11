@@ -1,6 +1,7 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
     using System;
+    using System.Dynamic;
     using System.Linq;
 
     using Dapper;
@@ -19,14 +20,23 @@
         {
             EnsureEntityNameIsValid(command.EntityName);
 
-            var fieldNames = string.Join(", ", command.PropertyValues.Keys.Select(key => $"[{key}]"));
-            var fieldValues = string.Join(", ", command.PropertyValues.Select(value => value));
-            var id = Guid.NewGuid();
+            var fields = command.PropertyValues.Where(pair => !DefaultEntityFields.Contains(pair.Key));
+            var fieldNames = string.Join(", ", fields.Select(pair => $"[{pair.Key}]"));
+            var fieldValueBindings = string.Join(", ", fields.Select(pair => $"@NewEntity{pair.Key}"));
+
+            dynamic arguments = new ExpandoObject();
+            arguments.NewEntityId = Guid.NewGuid();
+            arguments.NewEntityCreatedAt = DateTime.UtcNow;
+
+            foreach (var field in fields)
+            {
+                arguments.TryAdd($"NewEntity{field.Key}", field.Value);
+            }
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                var sqlQuery = $"INSERT INTO [{command.EntityName}] ([Id], {fieldNames}) VALUES (@NewEntityId, {fieldValues})";
-                connection.Execute(sqlQuery, new { NewEntityId = id });
+                var sqlQuery = BuildQuery($"INSERT INTO [{command.EntityName}] ([Id], [CreatedOn], {fieldNames}) VALUES (@NewEntityId, @NewEntityCreatedAt, {fieldValueBindings})");
+                connection.Execute(sqlQuery, (object)arguments);
             }
         }
     }

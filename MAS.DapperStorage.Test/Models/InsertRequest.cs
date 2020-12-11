@@ -6,6 +6,6 @@
     {
         public string EntityName { get; set; }
 
-        public IDictionary<string, object> Values { get; set; }
+        public IDictionary<string, string> Values { get; set; }
     }
 }
