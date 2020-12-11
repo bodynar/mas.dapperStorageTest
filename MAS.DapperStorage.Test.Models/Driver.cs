@@ -3,9 +3,9 @@
     [EntityMarker]
     public class Driver : Person
     {
-        public double Experience { get; set; }
+        public double? Experience { get; set; }
 
-        public double Rating { get; set; }
+        public double? Rating { get; set; }
 
         public bool IsSmoker { get; set; }
 

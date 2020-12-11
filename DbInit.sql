@@ -72,17 +72,17 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[Driver](
 			[Id] [uniqueidentifier] NOT NULL,
-			[Experience] [float] NOT NULL,
-			[Rating] [float] NOT NULL,
+			[Experience] [float] NULL,
+			[Rating] [float] NULL,
 			[IsSmoker] [bit] NOT NULL,
 			[IsTalkative] [bit] NOT NULL,
 			[IsMusicLover] [bit] NOT NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
 			[ModifiedOn] [datetime2](7) NULL,
-			[FirstName] [nvarchar](max) NULL,
-			[LastName] [nvarchar](max) NULL,
+			[FirstName] [nvarchar](max) NOT NULL,
+			[LastName] [nvarchar](max) NOT NULL,
 			[MiddleName] [nvarchar](max) NULL,
-			[BirthDate] [datetime2](7) NOT NULL,
+			[BirthDate] [datetime2](7) NULL,
 		 CONSTRAINT [PK_Driver] PRIMARY KEY CLUSTERED 
 			([Id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 				ON [PRIMARY])
@@ -113,7 +113,7 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[CarType](
 			[Id] [uniqueidentifier] NOT NULL,
-			[Name] [nvarchar](max) NULL,
+			[Name] [nvarchar](max) NOT NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
 			[ModifiedOn] [datetime2](7) NULL,
 		 CONSTRAINT [PK_CarType] PRIMARY KEY CLUSTERED ([Id] ASC)
@@ -163,11 +163,11 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[Car](
 			[Id] [uniqueidentifier] NOT NULL,
-			[Manufacturer] [nvarchar](max) NULL,
-			[Model] [nvarchar](max) NULL,
-			[ManufacturedDate] [datetime2](7) NOT NULL,
-			[Kilometrage] [float] NOT NULL,
-			[SeatCount] [int] NOT NULL,
+			[Manufacturer] [nvarchar](max) NOT NULL,
+			[Model] [nvarchar](max) NOT NULL,
+			[ManufacturedDate] [datetime2](7) NULL,
+			[Kilometrage] [float] NULL,
+			[SeatCount] [int] NULL,
 			[TypeId] [uniqueidentifier] NULL,
 			[HasBabyChair] [bit] NOT NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
@@ -210,13 +210,13 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[Passenger](
 			[Id] [uniqueidentifier] NOT NULL,
-			[Rating] [float] NOT NULL,
+			[Rating] [float] NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
 			[ModifiedOn] [datetime2](7) NULL,
 			[FirstName] [nvarchar](max) NULL,
 			[LastName] [nvarchar](max) NULL,
 			[MiddleName] [nvarchar](max) NULL,
-			[BirthDate] [datetime2](7) NOT NULL,
+			[BirthDate] [datetime2](7) NULL,
 		 CONSTRAINT [PK_Passenger] PRIMARY KEY CLUSTERED ([Id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 			ON [PRIMARY]
 		) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
@@ -239,7 +239,6 @@ IF (
 		')
 END
 
-
 -- [Drive]
 IF (
 	NOT EXISTS
@@ -249,7 +248,7 @@ IF (
 		CREATE TABLE [dbo].[Drive](
 			[Id] [uniqueidentifier] NOT NULL,
 			[StartAt] [datetime2](7) NOT NULL,
-			[CalculatedEndAt] [datetime2](7) NOT NULL,
+			[CalculatedEndAt] [datetime2](7) NULL,
 			[FactEndAt] [datetime2](7) NULL,
 			[PassengerId] [uniqueidentifier] NULL,
 			[DriverId] [uniqueidentifier] NULL,
@@ -301,7 +300,7 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[Order](
 			[Id] [uniqueidentifier] NOT NULL,
-			[PassengerId] [uniqueidentifier] NULL,
+			[PassengerId] [uniqueidentifier] NOT NULL,
 			[DriveId] [uniqueidentifier] NULL,
 			[Price] [float] NOT NULL,
 			[Target] [nvarchar](max) NULL,
@@ -348,8 +347,8 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[DriverCar](
 			[Id] [uniqueidentifier] NOT NULL,
-			[DriverId] [uniqueidentifier] NULL,
-			[CarId] [uniqueidentifier] NULL,
+			[DriverId] [uniqueidentifier] NOT NULL,
+			[CarId] [uniqueidentifier] NOT NULL,
 			[UsedAt] [datetime2](7) NOT NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
 			[ModifiedOn] [datetime2](7) NULL,
@@ -393,8 +392,8 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[DriverOrder](
 			[Id] [uniqueidentifier] NOT NULL,
-			[DriverId] [uniqueidentifier] NULL,
-			[OrderId] [uniqueidentifier] NULL,
+			[DriverId] [uniqueidentifier] NOT NULL,
+			[OrderId] [uniqueidentifier] NOT NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
 			[ModifiedOn] [datetime2](7) NULL,
 		 CONSTRAINT [PK_DriverOrder] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
@@ -437,8 +436,8 @@ IF (
 	BEGIN
 		CREATE TABLE [dbo].[PassengerOrder](
 			[Id] [uniqueidentifier] NOT NULL,
-			[PassengerId] [uniqueidentifier] NULL,
-			[OrderId] [uniqueidentifier] NULL,
+			[PassengerId] [uniqueidentifier] NOT NULL,
+			[OrderId] [uniqueidentifier] NOT NULL,
 			[CreatedOn] [datetime2](7) NOT NULL,
 			[ModifiedOn] [datetime2](7) NULL,
 		 CONSTRAINT [PK_PassengerOrder] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)

@@ -7,7 +7,7 @@
     {
         public DateTime StartAt { get; set; }
 
-        public DateTime CalculatedEndAt { get; set; }
+        public DateTime? CalculatedEndAt { get; set; }
 
         public DateTime? FactEndAt { get; set; }
 

@@ -3,6 +3,6 @@
     [EntityMarker]
     public class Passenger : Person
     {
-        public double Rating { get; set; }
+        public double? Rating { get; set; }
     }
 }
