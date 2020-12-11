@@ -9,11 +9,18 @@
 
     public class BaseCqrsHandler
     {
-        private IEnumerable<string> DeclaredEntities { get; }
+        private const string UseDataBaseStatement = "USE [DapperStorageTest]";
+
+        private IEnumerable<string> DeclaredEntities { get;  }
+
+        protected static IEnumerable<string> DefaultEntityFields { get; private set; }
 
         protected IDbConnectionFactory DbConnectionFactory { get; }
 
-        private const string UseDataBaseStatement = "USE [DapperStorageTest]";
+        static BaseCqrsHandler()
+        {
+            InitDefaultEntityFields();
+        }
 
         public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory)
         {
@@ -51,6 +58,11 @@
         #endregion
 
         #region Not public API
+
+        private static void InitDefaultEntityFields()
+        {
+            DefaultEntityFields = typeof(Entity).GetProperties().Select(x => x.Name);
+        }
 
         private bool IsValidEntityName(string entityName)
         {

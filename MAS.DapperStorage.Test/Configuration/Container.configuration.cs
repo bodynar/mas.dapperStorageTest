@@ -20,11 +20,11 @@
 
             container.Register(
                 typeof(IQueryHandler<,>),
-                typeof(IQueryHandler<,>).Assembly);
+                typeof(BaseCqrsHandler).Assembly);
 
             container.Register(
                 typeof(ICommandHandler<>),
-                typeof(ICommandHandler<>).Assembly);
+                typeof(BaseCqrsHandler).Assembly);
 
             container.Register(typeof(IQueryProcessor), typeof(QueryProcessor), Lifestyle.Singleton);
             container.Register(typeof(ICommandProcessor), typeof(CommandProcessor), Lifestyle.Singleton);
