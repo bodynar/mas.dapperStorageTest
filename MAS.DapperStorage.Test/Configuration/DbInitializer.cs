@@ -2,7 +2,9 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
 
     using MAS.DapperStorageTest.Infrastructure;
 
@@ -27,20 +29,32 @@
 
                         if (!string.IsNullOrEmpty(sqlDatabaseInitScript))
                         {
-                            // TODO: When storageTest doesn't exist - here exception [StorageTest] not exist
-                            using (var connection = dbConnectionFactory.CreateDbConnection())
+                            var dbInitScriptParts =
+                                Regex.Split(sqlDatabaseInitScript, "END[^;]*;")
+                                    .Select((x, y) => y == 0 ? $"{x} END;" : x)
+                                    .ToList();
+
+                            if (dbInitScriptParts.Count == 2)
                             {
-                                var command = connection.CreateCommand();
-
-                                command.CommandText = sqlDatabaseInitScript;
-
-                                connection.Open();
-                                if (connection.State == System.Data.ConnectionState.Open)
+                                using (var connection = dbConnectionFactory.CreateDbConnection())
                                 {
-                                    command.ExecuteNonQuery();
-                                    connection.Close();
-                                    
-                                    // TODO: When storageTest not included in connection string and doesn't exist - here sql exception [StorageTest] not exists
+                                    foreach (var sqlScript in dbInitScriptParts)
+                                    {
+                                        using (var command = connection.CreateCommand())
+                                        {
+                                            command.CommandText = sqlScript;
+
+                                            if (connection.State != System.Data.ConnectionState.Open)
+                                            {
+                                                connection.Open();
+                                            }
+
+                                            if (connection.State == System.Data.ConnectionState.Open)
+                                            {
+                                                command.ExecuteNonQuery();
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -48,7 +62,7 @@
                 }
                 catch (Exception ex)
                 {
-                    var a = 10;
+                    // TODO: add logger here
                 }
             }
 
@@ -68,7 +82,7 @@
 
                 result = File.ReadAllText(path);
             }
-            catch {}
+            catch { }
 
             return result;
         }

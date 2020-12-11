@@ -13,6 +13,8 @@
 
         protected IDbConnectionFactory DbConnectionFactory { get; }
 
+        private const string UseDataBaseStatement = "USE [DapperStorageTest]";
+
         public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory)
         {
             DbConnectionFactory = dbConnectionFactory;
@@ -39,6 +41,11 @@
             {
                 throw new DatabaseOperationException($"Entity name \"{entityName}\" is not valid or isn't presented in database.");
             }
+        }
+
+        protected string BuildQuery(string queryPart)
+        {
+            return $"{UseDataBaseStatement};{queryPart}";
         }
 
         #endregion
