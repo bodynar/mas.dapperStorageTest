@@ -11,7 +11,7 @@
     {
         private const string UseDataBaseStatement = "USE [DapperStorageTest]";
 
-        private IEnumerable<string> DeclaredEntities { get;  }
+        private IEnumerable<string> DeclaredEntities { get; }
 
         protected static IEnumerable<string> DefaultEntityFields { get; private set; }
 
@@ -43,7 +43,7 @@
         protected void EnsureEntityNameIsValid(string entityName)
         {
             var isValidEntity = IsValidEntityName(entityName);
-            
+
             if (!isValidEntity)
             {
                 throw new DatabaseOperationException($"Entity name \"{entityName}\" is not valid or isn't presented in database.");
@@ -53,6 +53,13 @@
         protected string BuildQuery(string queryPart)
         {
             return $"{UseDataBaseStatement};{queryPart}";
+        }
+
+        protected string GetComparisonOperator(ComparisonType comparisonType)
+        {
+            // TODO
+
+            return string.Empty;
         }
 
         #endregion

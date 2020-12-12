@@ -32,6 +32,8 @@
             return entity.Wrap();
         }
 
+        #region Not public API
+
         private Entity GetById(SelectQuery query)
         {
             var queryColumns = !query.Fields.Any() ? "*" : string.Join(", ", query.Fields.Select(columnName => $"[{columnName}]"));
@@ -51,12 +53,22 @@
             var whereSqlParts = new List<string>();
             var arguments = new ExpandoObject();
 
-            foreach (var pair in query.Filters)
+            var queryFilters = query.NewFilters.Where(filter => filter.ComparisonType != ComparisonType.None);
+
+            foreach (var filter in queryFilters)
             {
-                whereSqlParts.Add($"[{pair.Key}] = @Entity{pair.Key}");
-                arguments.TryAdd($"Entity{pair.Key}", pair.Value);
+                var comparisonOperator = GetComparisonOperator(filter.ComparisonType);
+
+                whereSqlParts.Add($"[{filter.FieldName}] {comparisonOperator} @Entity{filter.FieldName}");
+                arguments.TryAdd($"Entity{filter.FieldName}", filter.FilterValue);
             }
-            // TODO: rework filters (add groups or just eject into object)
+
+            //foreach (var pair in query.Filters)
+            //{
+            //    whereSqlParts.Add($"[{pair.Key}] = @Entity{pair.Key}");
+            //    arguments.TryAdd($"Entity{pair.Key}", pair.Value);
+            //}
+
             var queryColumns = !query.Fields.Any() ? "*" : string.Join(", ", query.Fields.Select(columnName => $"[{columnName}]"));
 
             var sqlQuery = BuildQuery($"SELECT {queryColumns} FROM [{query.EntityName}] WHERE {string.Join(", ", whereSqlParts)}");
@@ -65,5 +77,7 @@
                 return connection.QueryFirstOrDefault<Entity>(sqlQuery, arguments);
             }
         }
+
+        #endregion
     }
 }
