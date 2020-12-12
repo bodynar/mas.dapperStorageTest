@@ -11,6 +11,8 @@
 
         public IDictionary<string, string> PropertyValues { get; }
 
+        public Guid EntityId { get; set; }
+
         public InsertCommand(string entityName, IDictionary<string, string> propertyValues)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));

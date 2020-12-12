@@ -38,6 +38,8 @@
                 var sqlQuery = BuildQuery($"INSERT INTO [{command.EntityName}] ([Id], [CreatedOn], {fieldNames}) VALUES (@NewEntityId, @NewEntityCreatedAt, {fieldValueBindings})");
                 connection.Execute(sqlQuery, (object)arguments);
             }
+
+            command.EntityId = arguments.NewEntityId;
         }
     }
 }

@@ -10,8 +10,7 @@
 
     [ApiController]
     [Route("api/[controller]")]
-    [Produces("application/json")]
-    [Consumes("application/json")]
+    [Produces("application/json"), Consumes("application/json")]
     public class DataController : ControllerBase
     {
         public ICommandProcessor CommandProcessor { get; }
@@ -36,11 +35,11 @@
             var command = new InsertCommand(insertRequest.EntityName, insertRequest.Values);
             CommandProcessor.Execute(command);
 
-            return Guid.Empty;
+            return command.EntityId;
         }
 
         [HttpGet("[action]")]
-        public string Select([FromBody]SelectRequest selectRequest)
+        public string Select([FromBody] SelectRequest selectRequest)
         {
             EnsureNotNull(selectRequest, nameof(selectRequest));
 
@@ -49,7 +48,6 @@
 
             return result.ToString();
         }
-           
 
         private static void EnsureNotNull<TValue>(TValue value, string paramName)
             where TValue : class
