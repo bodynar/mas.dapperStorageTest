@@ -1,7 +1,5 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
-    using System.Collections.Generic;
-    using System.Dynamic;
     using System.Linq;
 
     using Dapper;
@@ -22,6 +20,8 @@
         public override WrappedEntity Handle(SelectQuery query)
         {
             EnsureEntityNameIsValid(query.EntityName);
+            EnsureFieldsAreValidForEntity(query.EntityName, query.Fields);
+
             // TODO: fix type cast
             // do not use types, just map dapper result
             Entity entity =
@@ -38,44 +38,30 @@
         {
             var queryColumns = !query.Fields.Any() ? "*" : string.Join(", ", query.Fields.Select(columnName => $"[{columnName}]"));
             var sqlQuery = BuildQuery($"SELECT {queryColumns} FROM [{query.EntityName}] WHERE [Id] = @id");
+            Entity result;
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                var res = connection.QueryFirstOrDefault(sqlQuery, new { Id = query.EntityId });
-                return res as Entity;
+                result = connection.QueryFirstOrDefault(sqlQuery, new { Id = query.EntityId });
             }
+
+            return result;
         }
 
         private Entity GetByFilters(SelectQuery query)
         {
-            EnsureFieldsAreValidForEntity(query.EntityName, query.Filters.Keys);
-
-            var whereSqlParts = new List<string>();
-            var arguments = new ExpandoObject();
-
-            var queryFilters = query.NewFilters.Where(filter => filter.ComparisonType != ComparisonType.None);
-
-            foreach (var filter in queryFilters)
-            {
-                var comparisonOperator = GetComparisonOperator(filter.ComparisonType);
-
-                whereSqlParts.Add($"[{filter.FieldName}] {comparisonOperator} @Entity{filter.FieldName}");
-                arguments.TryAdd($"Entity{filter.FieldName}", filter.FilterValue);
-            }
-
-            //foreach (var pair in query.Filters)
-            //{
-            //    whereSqlParts.Add($"[{pair.Key}] = @Entity{pair.Key}");
-            //    arguments.TryAdd($"Entity{pair.Key}", pair.Value);
-            //}
-
+            var (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.NewFilters);
             var queryColumns = !query.Fields.Any() ? "*" : string.Join(", ", query.Fields.Select(columnName => $"[{columnName}]"));
 
-            var sqlQuery = BuildQuery($"SELECT {queryColumns} FROM [{query.EntityName}] WHERE {string.Join(", ", whereSqlParts)}");
+            var sqlQuery = BuildQuery($"SELECT {queryColumns} FROM [{query.EntityName}] WHERE {whereCondition}");
+            Entity result;
+
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                return connection.QueryFirstOrDefault<Entity>(sqlQuery, arguments);
+                result = connection.QueryFirstOrDefault<Entity>(sqlQuery, arguments);
             }
+
+            return result;
         }
 
         #endregion

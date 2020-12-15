@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
@@ -74,6 +75,35 @@
             }
 
             return string.Empty;
+        }
+
+        protected (string, ExpandoObject) BuildWhereFilter(string entityName, IEnumerable<QueryFilter> filters)
+        {
+            filters = filters.Where(filter => filter.ComparisonType != ComparisonType.None);
+            var fieldNames = filters.Select(filter => filter.FieldName);
+
+            EnsureFieldsAreValidForEntity(entityName, fieldNames);
+
+            var arguments = new ExpandoObject();
+            var whereSqlParts = new List<string>();
+
+            foreach (var filter in filters)
+            {
+                var comparisonOperator = GetComparisonOperator(filter.ComparisonType);
+
+                if (!string.IsNullOrEmpty(comparisonOperator))
+                {
+                    whereSqlParts.Add($"[{filter.FieldName}] {comparisonOperator} @Entity{filter.FieldName}");
+                    arguments.TryAdd($"Entity{filter.FieldName}", filter.FilterValue);
+                }
+                else
+                {
+                    // TODO: log
+                    continue;
+                }
+            }
+
+            return (string.Join(", ", whereSqlParts), arguments);
         }
 
         #endregion
