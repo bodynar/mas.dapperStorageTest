@@ -57,7 +57,21 @@
 
         protected string GetComparisonOperator(ComparisonType comparisonType)
         {
-            // TODO
+            var field = comparisonType.GetType().GetField(comparisonType.ToString());
+
+            if (field == null)
+            {
+                return string.Empty;
+            }
+
+            var comparisonOperatorAttributes =
+                field.GetCustomAttributes(typeof(ComparisonOperatorAttribute), false) as ComparisonOperatorAttribute[];
+
+            if (comparisonOperatorAttributes != null
+                && comparisonOperatorAttributes.Length > 0)
+            {
+                return comparisonOperatorAttributes[0].Operator;
+            }
 
             return string.Empty;
         }
@@ -78,6 +92,13 @@
 
         private IEnumerable<string> GetDeclaredEntities()
         {
+            /*
+             * Так как Entity и все наследники, представленные в бд
+             * в данном проекте (и последующих) не используются по факту (кроме данной проверки),
+             * то их необходимость обусловлена только необходимостью валидировать некоторые члены cqrs запросов\команд.
+             * По аналогии с метаданными Terrasoft Creatio.
+             */
+
             return typeof(EntityMarkerAttribute).Assembly
                 .GetTypes()
                 .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
