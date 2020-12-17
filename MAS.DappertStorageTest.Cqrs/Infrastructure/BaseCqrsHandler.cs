@@ -18,14 +18,17 @@
 
         protected IDbConnectionFactory DbConnectionFactory { get; }
 
+        protected IFilterBuilder FilterBuilder { get; }
+
         static BaseCqrsHandler()
         {
             InitDefaultEntityFields();
         }
 
-        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory)
+        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
         {
-            DbConnectionFactory = dbConnectionFactory;
+            DbConnectionFactory = dbConnectionFactory ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
+            FilterBuilder = filterBuilder ?? throw new ArgumentNullException(nameof(filterBuilder));
             DeclaredEntities = GetDeclaredEntities();
         }
 
@@ -56,54 +59,18 @@
             return $"{UseDataBaseStatement};{queryPart}";
         }
 
-        protected string GetComparisonOperator(ComparisonType comparisonType)
-        {
-            var field = comparisonType.GetType().GetField(comparisonType.ToString());
-
-            if (field == null)
-            {
-                return string.Empty;
-            }
-
-            var comparisonOperatorAttributes =
-                field.GetCustomAttributes(typeof(ComparisonOperatorAttribute), false) as ComparisonOperatorAttribute[];
-
-            if (comparisonOperatorAttributes != null
-                && comparisonOperatorAttributes.Length > 0)
-            {
-                return comparisonOperatorAttributes[0].Operator;
-            }
-
-            return string.Empty;
-        }
-
         protected (string, ExpandoObject) BuildWhereFilter(string entityName, IEnumerable<QueryFilter> filters)
         {
-            filters = filters.Where(filter => filter.ComparisonType != ComparisonType.None);
-            var fieldNames = filters.Select(filter => filter.FieldName);
+            throw new NotImplementedException();
+        }
 
-            EnsureFieldsAreValidForEntity(entityName, fieldNames);
+        protected (string, ExpandoObject) BuildWhereFilter(string entityName, IEnumerable<QueryFilterGroup> filters)
+        {
+            var filterFieldNames = GetFilterFiledNames(filters);
 
-            var arguments = new ExpandoObject();
-            var whereSqlParts = new List<string>();
+            EnsureFieldsAreValidForEntity(entityName, filterFieldNames);
 
-            foreach (var filter in filters)
-            {
-                var comparisonOperator = GetComparisonOperator(filter.ComparisonType);
-
-                if (!string.IsNullOrEmpty(comparisonOperator))
-                {
-                    whereSqlParts.Add($"[{filter.FieldName}] {comparisonOperator} @Entity{filter.FieldName}");
-                    arguments.TryAdd($"Entity{filter.FieldName}", filter.FilterValue);
-                }
-                else
-                {
-                    // TODO: log
-                    continue;
-                }
-            }
-
-            return (string.Join(", ", whereSqlParts), arguments);
+            return FilterBuilder.Build(filters);
         }
 
         #endregion
@@ -148,6 +115,23 @@
                 .Select(x => x.Name);
 
             return fieldNames.Where(fieldName => !propertyNames.Contains(fieldName));
+        }
+
+        private IEnumerable<string> GetFilterFiledNames(IEnumerable<QueryFilterGroup> queryFilters)
+        {
+            var fieldNames = new List<string>();
+
+            foreach (var filterItem in queryFilters)
+            {
+                var filterItemFieldNames =
+                    filterItem.InnerGroups.Any()
+                        ? GetFilterFiledNames(filterItem.InnerGroups)
+                        : filterItem.Filters.Select(x => x.FieldName);
+
+                fieldNames.AddRange(filterItemFieldNames);
+            }
+
+            return fieldNames.Distinct().OrderBy(x => x);
         }
 
         #endregion
