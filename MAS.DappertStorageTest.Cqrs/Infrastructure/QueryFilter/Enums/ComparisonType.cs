@@ -2,13 +2,13 @@
 {
     public enum ComparisonType
     {
-        [ComparisonOperator("NONE")]
+        [SqlOperator("NONE")]
         None = 0,
 
-        [ComparisonOperator("EQUAL")]
+        [SqlOperator("EQUAL")]
         Equal = 1,
 
-        [ComparisonOperator("NOT EQUAL")]
+        [SqlOperator("NOT EQUAL")]
         NotEqual = 2
     }
 }
