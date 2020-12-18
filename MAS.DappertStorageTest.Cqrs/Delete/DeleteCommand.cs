@@ -1,7 +1,6 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
     using System;
-    using System.Collections.Generic;
 
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
 
@@ -11,7 +10,7 @@
 
         public string EntityName { get; }
 
-        public IEnumerable<QueryFilter> Filters { get; }
+        public QueryFilterGroup FilterGroup { get; }
 
         public int RowsAffected { get; set; }
 
@@ -21,10 +20,10 @@
             EntityId = entityId;
         }
 
-        public DeleteCommand(string entityName, IEnumerable<QueryFilter> filters)
+        public DeleteCommand(string entityName, QueryFilterGroup filterGroup)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
-            Filters = filters ?? throw new ArgumentNullException(nameof(filters));
+            FilterGroup = filterGroup ?? throw new ArgumentNullException(nameof(filterGroup));
         }
     }
 }

@@ -19,7 +19,7 @@
 
         public IDictionary<string, string> Filters { get; }
 
-        public IEnumerable<QueryFilter> NewFilters { get; }
+        public QueryFilterGroup FilterGroup { get; }
 
         public SelectQuery(string entityName, IEnumerable<string> fields, Guid? entityId)
         {
@@ -28,11 +28,11 @@
             EntityId = entityId;
         }
 
-        public SelectQuery(string entityName, IEnumerable<string> fields, IEnumerable<QueryFilter> filters)
+        public SelectQuery(string entityName, IEnumerable<string> fields, QueryFilterGroup filterGroup)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             Fields = fields ?? Enumerable.Empty<string>();
-            NewFilters = filters;
+            FilterGroup = filterGroup ?? throw new ArgumentNullException(nameof(filterGroup));
         }
     }
 }
