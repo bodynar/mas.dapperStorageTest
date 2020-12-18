@@ -43,7 +43,7 @@
         {
             EnsureNotNull(selectRequest, nameof(selectRequest));
 
-            var query = new SelectQuery(selectRequest.EntityName, selectRequest.Fields, selectRequest.EntityId, selectRequest.Filters);
+            var query = new SelectQuery(selectRequest.EntityName, selectRequest.Fields, selectRequest.EntityId);
             var result = QueryProcessor.Execute(query);
 
             return result.ToString();
