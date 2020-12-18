@@ -3,11 +3,11 @@
     using System;
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
-    public sealed class ComparisonOperatorAttribute : Attribute
+    public sealed class SqlOperatorAttribute : Attribute
     {
         public string Operator { get; }
 
-        public ComparisonOperatorAttribute(string @operator)
+        public SqlOperatorAttribute(string @operator)
         {
             Operator = @operator;
         }
