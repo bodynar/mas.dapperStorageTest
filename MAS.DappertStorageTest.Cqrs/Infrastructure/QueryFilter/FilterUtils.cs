@@ -1,10 +1,12 @@
-﻿namespace MAS.DappertStorageTest.Cqrs.Infrastructure
+﻿using System;
+
+namespace MAS.DappertStorageTest.Cqrs.Infrastructure
 {
     public static class FilterUtils
     {
-        public static string GetComparisonOperator(this ComparisonType comparisonType)
+        public static string GetSqlOperator(this Enum value)
         {
-            var field = comparisonType.GetType().GetField(comparisonType.ToString());
+            var field = value.GetType().GetField(value.ToString());
 
             if (field == null)
             {
@@ -12,7 +14,7 @@
             }
 
             var comparisonOperatorAttributes =
-                field.GetCustomAttributes(typeof(ComparisonOperatorAttribute), false) as ComparisonOperatorAttribute[];
+                field.GetCustomAttributes(typeof(SqlOperatorAttribute), false) as SqlOperatorAttribute[];
 
             if (comparisonOperatorAttributes != null
                 && comparisonOperatorAttributes.Length > 0)
