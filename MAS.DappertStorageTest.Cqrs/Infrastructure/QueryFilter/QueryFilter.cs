@@ -4,19 +4,22 @@
 
     public class QueryFilter
     {
+        public string Name { get; }
+
         public string EntityName { get; }
 
         public string FieldName { get; }
 
-        public string FilterValue { get; }
+        public string Value { get; }
 
         public ComparisonType ComparisonType { get; }
 
-        public QueryFilter(string entityName, string fieldName, string filterValue, ComparisonType comparisonType)
+        public QueryFilter(string name, string entityName, string fieldName, string value, ComparisonType comparisonType)
         {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             FieldName = fieldName ?? throw new ArgumentNullException(nameof(fieldName));
-            FilterValue = filterValue ?? throw new ArgumentNullException(nameof(filterValue));
+            Value = value ?? throw new ArgumentNullException(nameof(value));
             ComparisonType = comparisonType;
         }
     }

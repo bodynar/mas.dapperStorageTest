@@ -8,7 +8,7 @@
     {
         public string EntityName { get; }
 
-        public string FilterName { get; }
+        public string Name { get; }
 
         public FilterJoinType FilterJoinType { get; }
 
@@ -19,18 +19,18 @@
         public bool IsEmpty
             => !Filters.Any() && !InnerGroups.Any();
 
-        public QueryFilterGroup(string entityName, string filterName, FilterJoinType filterJoinType, IEnumerable<QueryFilter> filters)
+        public QueryFilterGroup(string entityName, string name, FilterJoinType filterJoinType, IEnumerable<QueryFilter> filters)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
-            FilterName = filterName ?? throw new ArgumentNullException(nameof(filterName));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             Filters = filters ?? throw new ArgumentNullException(nameof(filters));
             FilterJoinType = filterJoinType;
         }
 
-        public QueryFilterGroup(string entityName, string filterName, FilterJoinType filterJoinType, IEnumerable<QueryFilterGroup> innerGroups)
+        public QueryFilterGroup(string entityName, string name, FilterJoinType filterJoinType, IEnumerable<QueryFilterGroup> innerGroups)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
-            FilterName = filterName ?? throw new ArgumentNullException(nameof(filterName));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             InnerGroups = innerGroups ?? throw new ArgumentNullException(nameof(innerGroups));
             FilterJoinType = filterJoinType;
         }
