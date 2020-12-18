@@ -10,8 +10,8 @@
     {
         protected Type CommandType { get; }
 
-        public BaseCommandHandler(IDbConnectionFactory dbConnectionFactory)
-            : base(dbConnectionFactory)
+        public BaseCommandHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, filterBuilder)
         {
             CommandType = typeof(TCommand);
         }

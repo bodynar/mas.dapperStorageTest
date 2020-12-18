@@ -11,8 +11,8 @@
 
     public class InsertCommandHandler : BaseCommandHandler<InsertCommand>
     {
-        public InsertCommandHandler(IDbConnectionFactory dbConnectionFactory)
-            : base(dbConnectionFactory)
+        public InsertCommandHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, filterBuilder)
         {
         }
 

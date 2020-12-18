@@ -12,8 +12,8 @@
 
     public class SelectQueryHandler : BaseQueryHandler<SelectQuery, WrappedEntity>
     {
-        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory)
-            : base(dbConnectionFactory)
+        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, filterBuilder)
         {
         }
 
@@ -50,7 +50,7 @@
 
         private Entity GetByFilters(SelectQuery query)
         {
-            var (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.NewFilters);
+            var (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
             var queryColumns = !query.Fields.Any() ? "*" : string.Join(", ", query.Fields.Select(columnName => $"[{columnName}]"));
 
             var sqlQuery = BuildQuery($"SELECT {queryColumns} FROM [{query.EntityName}] WHERE {whereCondition}");

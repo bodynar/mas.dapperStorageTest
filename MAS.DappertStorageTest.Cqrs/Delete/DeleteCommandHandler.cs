@@ -7,8 +7,8 @@
 
     public class DeleteCommandHandler : BaseCommandHandler<DeleteCommand>
     {
-        public DeleteCommandHandler(IDbConnectionFactory dbConnectionFactory)
-            : base(dbConnectionFactory)
+        public DeleteCommandHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, filterBuilder)
         {
         }
 
@@ -39,7 +39,7 @@
 
         private int DeleteByFilters(DeleteCommand command)
         {
-            var (whereCondition, arguments) = BuildWhereFilter(command.EntityName, command.Filters);
+            var (whereCondition, arguments) = BuildWhereFilter(command.EntityName, command.FilterGroup);
             var sqlQuery = BuildQuery($"DELETE FROM {command.EntityName} WHERE {whereCondition}");
             var result = 0;
 
