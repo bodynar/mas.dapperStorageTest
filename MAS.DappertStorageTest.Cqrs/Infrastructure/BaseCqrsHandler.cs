@@ -12,7 +12,7 @@
     {
         private const string UseDataBaseStatement = "USE [DapperStorageTest]";
 
-        private IEnumerable<string> DeclaredEntities { get; }
+        private static IEnumerable<string> DeclaredEntities { get; set; }
 
         protected static IEnumerable<string> DefaultEntityFields { get; private set; }
 
@@ -22,14 +22,14 @@
 
         static BaseCqrsHandler()
         {
-            InitDefaultEntityFields();
+            InitDatabaseModelsStaticData();
         }
 
+        // TODO: filter builder in childs - must be optional
         public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
         {
             DbConnectionFactory = dbConnectionFactory ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
             FilterBuilder = filterBuilder ?? throw new ArgumentNullException(nameof(filterBuilder));
-            DeclaredEntities = GetDeclaredEntities();
         }
 
         #region Protected members
@@ -56,39 +56,26 @@
 
         protected string BuildQuery(string queryPart)
         {
-            return $"{UseDataBaseStatement};{queryPart}";
+            return $"{UseDataBaseStatement};{Environment.NewLine}{queryPart}";
         }
 
-        protected (string, ExpandoObject) BuildWhereFilter(string entityName, IEnumerable<QueryFilter> filters)
+        protected (string, ExpandoObject) BuildWhereFilter(string entityName, QueryFilterGroup filter)
         {
-            throw new NotImplementedException();
-        }
-
-        protected (string, ExpandoObject) BuildWhereFilter(string entityName, IEnumerable<QueryFilterGroup> filters)
-        {
-            var filterFieldNames = GetFilterFiledNames(filters);
+            var filterFieldNames = GetFilterFiledNames(filter);
 
             EnsureFieldsAreValidForEntity(entityName, filterFieldNames);
 
-            return FilterBuilder.Build(filters);
+            return FilterBuilder.Build(filter);
         }
 
         #endregion
 
         #region Not public API
 
-        private static void InitDefaultEntityFields()
+        private static void InitDatabaseModelsStaticData()
         {
             DefaultEntityFields = typeof(Entity).GetProperties().Select(x => x.Name);
-        }
 
-        private bool IsValidEntityName(string entityName)
-        {
-            return DeclaredEntities.Contains(entityName);
-        }
-
-        private IEnumerable<string> GetDeclaredEntities()
-        {
             /*
              * Так как Entity и все наследники, представленные в бд
              * в данном проекте (и последующих) не используются по факту (кроме данной проверки),
@@ -96,11 +83,16 @@
              * По аналогии с метаданными Terrasoft Creatio.
              */
 
-            return typeof(EntityMarkerAttribute).Assembly
+            DeclaredEntities = typeof(EntityMarkerAttribute).Assembly
                 .GetTypes()
                 .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
                 .Select(x => x.Name)
                 .ToList();
+        }
+
+        private bool IsValidEntityName(string entityName)
+        {
+            return DeclaredEntities.Contains(entityName);
         }
 
         private IEnumerable<string> GetNotValidFieldsForEntity(string entityName, IEnumerable<string> fieldNames)
@@ -117,18 +109,20 @@
             return fieldNames.Where(fieldName => !propertyNames.Contains(fieldName));
         }
 
-        private IEnumerable<string> GetFilterFiledNames(IEnumerable<QueryFilterGroup> queryFilters)
+        private IEnumerable<string> GetFilterFiledNames(QueryFilterGroup queryFilter)
         {
             var fieldNames = new List<string>();
 
-            foreach (var filterItem in queryFilters)
+            if (queryFilter.InnerGroups.Any())
             {
-                var filterItemFieldNames =
-                    filterItem.InnerGroups.Any()
-                        ? GetFilterFiledNames(filterItem.InnerGroups)
-                        : filterItem.Filters.Select(x => x.FieldName);
-
-                fieldNames.AddRange(filterItemFieldNames);
+                foreach (var filterItem in queryFilter.InnerGroups)
+                {
+                    var innerFieldNames = GetFilterFiledNames(filterItem);
+                    fieldNames.AddRange(innerFieldNames);
+                }
+            } else
+            {
+                fieldNames.AddRange(queryFilter.Filters.Select(x => x.FieldName));
             }
 
             return fieldNames.Distinct().OrderBy(x => x);
