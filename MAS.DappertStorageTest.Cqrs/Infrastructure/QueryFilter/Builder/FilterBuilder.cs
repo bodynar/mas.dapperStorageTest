@@ -1,5 +1,6 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
+    using System;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
@@ -8,64 +9,80 @@
 
     public class FilterBuilder : IFilterBuilder
     {
-        private const string SqlWhereFilterItemPattern = "({0})";
-
-        public (string, ExpandoObject) Build(IEnumerable<QueryFilterGroup> queryFilterGroup)
+        public FilterBuilder()
         {
-            // TODO: log none filters
-            queryFilterGroup = queryFilterGroup.Where(filter => filter.FilterJoinType != FilterJoinType.None && !filter.IsEmpty);
-
-            var arguments = new ExpandoObject();
-            var whereSqlParts = new List<string>();
-
-            foreach (var filterGroup in queryFilterGroup)
-            {
-
-                // get internal sql and wrap it into parenthesis () and add operator AND\OR
-            }
-
-            return (string.Join(", ", whereSqlParts), arguments);
-
-            throw new System.NotImplementedException();
         }
 
-        private string BuildWhereFilterGroup(QueryFilterGroup filterGroup, ExpandoObject arguments)
+        public (string, ExpandoObject) Build(QueryFilterGroup queryFilterGroup)
         {
-            var sqlFilter = string.Empty;
+            var arguments = new ExpandoObject();
+            var resultSql = BuildWhereFilter(queryFilterGroup, arguments);
 
+            return (resultSql, arguments);
+        }
+
+        private string BuildWhereFilter(QueryFilterGroup filterGroup, ExpandoObject arguments)
+        {
             if (filterGroup.InnerGroups.Any())
             {
+                // TODO: log empty groups
+                // TODO: wrap groups
 
+                var accomulatedResult = string.Empty;
+                var innerFilters = filterGroup.InnerGroups.Where(x => x.FilterJoinType != FilterJoinType.None).OrderBy(x => x.FilterJoinType);
+
+                foreach (var filterGroupItem in innerFilters)
+                {
+                    var sqlFilter = BuildWhereFilter(filterGroupItem, arguments);
+                    var filterJointypeOperator = ""; // TODO;
+
+                    accomulatedResult +=
+                        string.IsNullOrEmpty(accomulatedResult) 
+                        ? $"({sqlFilter})"
+                        : $"{Environment.NewLine}{filterJointypeOperator} ({sqlFilter})";
+                }
+
+                return accomulatedResult;
             }
             else
             {
-                var filterItems = filterGroup.Filters.Where(filter => filter.ComparisonType != ComparisonType.None);
-                var fieldNames = filterItems.Select(filter => filter.FieldName);
+                return BuildWhereFilterGroupFromFields(filterGroup, arguments);
+            }
+        }
 
-                var whereSqlParts = new List<string>();
+        private string BuildWhereFilterGroupFromFields(QueryFilterGroup filterGroup, ExpandoObject arguments)
+        {
+            if (filterGroup.InnerGroups.Any())
+            {
+                throw new ArgumentException($"{nameof(BuildWhereFilterGroupFromFields)} can be used only with deepest filter group.");
+            }
+            
+            var sqlFilter = string.Empty;
+            var whereSqlParts = new List<string>();
 
-                foreach (var filter in filterItems)
+            // TODO: log empty filters
+            var filterItems = filterGroup.Filters.Where(filter => filter.ComparisonType != ComparisonType.None);
+            var fieldNames = filterItems.Select(filter => filter.FieldName);
+
+            foreach (var filter in filterItems)
+            {
+                var comparisonOperator = filter.ComparisonType.GetSqlOperator();
+
+                if (!string.IsNullOrEmpty(comparisonOperator))
                 {
-                    var comparisonOperator = filter.ComparisonType.GetComparisonOperator();
-
-                    if (!string.IsNullOrEmpty(comparisonOperator))
-                    {
-                        whereSqlParts.Add($"[{filter.FieldName}] {comparisonOperator} @Entity{filter.FieldName}");
-                        arguments.TryAdd($"Entity{filter.FieldName}", filter.FilterValue);
-                    }
-                    else
-                    {
-                        // TODO: log
-                        continue;
-                    }
+                    whereSqlParts.Add($"[{filter.FieldName}] {comparisonOperator} @{filter.Name}Entity{filter.FieldName}");
+                    arguments.TryAdd($"{filter.Name}Entity{filter.FieldName}", filter.Value);
                 }
-
-                var joinOperator = ""; // TODO
-
-                sqlFilter = string.Format(SqlWhereFilterItemPattern, string.Join($"{joinOperator} ", whereSqlParts));
+                else
+                {
+                    // TODO: log
+                    continue;
+                }
             }
 
-            return sqlFilter;
+            var joinOperator = filterGroup.FilterJoinType.GetSqlOperator();
+            
+            return $"({string.Join($"{joinOperator} ", whereSqlParts)})";
         }
     }
 }
