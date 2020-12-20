@@ -7,9 +7,9 @@
 
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
-    public class FilterBuilder : IFilterBuilder
+    public class MySqlFilterBuilder : IFilterBuilder
     {
-        public FilterBuilder()
+        public MySqlFilterBuilder()
         {
         }
 
@@ -34,7 +34,7 @@
                 foreach (var filterGroupItem in innerFilters)
                 {
                     var sqlFilter = BuildWhereFilter(filterGroupItem, arguments);
-                    var filterJointypeOperator = ""; // TODO;
+                    var filterJointypeOperator = filterGroupItem.FilterJoinType.GetSqlOperator();
 
                     accomulatedResult +=
                         string.IsNullOrEmpty(accomulatedResult) 
@@ -62,7 +62,6 @@
 
             // TODO: log empty filters
             var filterItems = filterGroup.Filters.Where(filter => filter.ComparisonType != ComparisonType.None);
-            var fieldNames = filterItems.Select(filter => filter.FieldName);
 
             foreach (var filter in filterItems)
             {
@@ -82,7 +81,7 @@
 
             var joinOperator = filterGroup.FilterJoinType.GetSqlOperator();
             
-            return $"({string.Join($"{joinOperator} ", whereSqlParts)})";
+            return $"({string.Join($"{Environment.NewLine}{joinOperator} ", whereSqlParts)})";
         }
     }
 }
