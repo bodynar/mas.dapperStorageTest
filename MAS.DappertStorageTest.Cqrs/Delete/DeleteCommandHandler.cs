@@ -26,7 +26,7 @@
 
         private int DeleteById(DeleteCommand command)
         {
-            var sqlQuery = BuildQuery($"DELETE FROM {command.EntityName} WHERE Id = @Id");
+            var sqlQuery = BuildQuery($"DELETE FROM [{command.EntityName}] WHERE Id = @Id");
             var result = 0;
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
@@ -40,7 +40,7 @@
         private int DeleteByFilters(DeleteCommand command)
         {
             var (whereCondition, arguments) = BuildWhereFilter(command.EntityName, command.FilterGroup);
-            var sqlQuery = BuildQuery($"DELETE FROM {command.EntityName} WHERE {whereCondition}");
+            var sqlQuery = BuildQuery($"DELETE FROM [{command.EntityName}] WHERE {whereCondition}");
             var result = 0;
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
