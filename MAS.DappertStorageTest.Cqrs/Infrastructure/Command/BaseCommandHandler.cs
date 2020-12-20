@@ -16,6 +16,12 @@
             CommandType = typeof(TCommand);
         }
 
+        public BaseCommandHandler(IDbConnectionFactory dbConnectionFactory)
+            : base(dbConnectionFactory)
+        {
+            CommandType = typeof(TCommand);
+        }
+
         public abstract void Handle(TCommand command);
     }
 }

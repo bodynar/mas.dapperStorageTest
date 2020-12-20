@@ -8,7 +8,7 @@
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Models;
 
-    public class BaseCqrsHandler
+    public abstract class BaseCqrsHandler
     {
         private const string UseDataBaseStatement = "USE [DapperStorageTest]";
 
@@ -25,10 +25,14 @@
             InitDatabaseModelsStaticData();
         }
 
-        // TODO: filter builder in childs - must be optional
-        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
+        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory)
         {
             DbConnectionFactory = dbConnectionFactory ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
+        }
+
+        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
+            : this(dbConnectionFactory)
+        {
             FilterBuilder = filterBuilder ?? throw new ArgumentNullException(nameof(filterBuilder));
         }
 

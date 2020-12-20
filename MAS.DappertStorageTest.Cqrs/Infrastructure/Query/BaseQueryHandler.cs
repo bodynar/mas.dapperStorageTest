@@ -11,6 +11,11 @@
         {
         }
 
+        public BaseQueryHandler(IDbConnectionFactory dbConnectionFactory)
+            : base(dbConnectionFactory)
+        {
+        }
+
         public abstract TResult Handle(TQuery query);
     }
 }
