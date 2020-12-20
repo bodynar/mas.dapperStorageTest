@@ -12,9 +12,9 @@
 
         public FilterJoinType FilterJoinType { get; }
 
-        public IEnumerable<QueryFilter> Filters { get; }
+        public IEnumerable<QueryFilter> Filters { get; } = Enumerable.Empty<QueryFilter>();
 
-        public IEnumerable<QueryFilterGroup> InnerGroups { get; }
+        public IEnumerable<QueryFilterGroup> InnerGroups { get; } = Enumerable.Empty<QueryFilterGroup>();
 
         public bool IsEmpty
             => !Filters.Any() && !InnerGroups.Any();
