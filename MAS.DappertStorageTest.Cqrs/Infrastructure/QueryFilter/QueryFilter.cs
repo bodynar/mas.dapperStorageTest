@@ -10,11 +10,11 @@
 
         public string FieldName { get; }
 
-        public string Value { get; }
+        public object Value { get; }
 
         public ComparisonType ComparisonType { get; }
 
-        public QueryFilter(string name, string entityName, string fieldName, string value, ComparisonType comparisonType)
+        public QueryFilter(string name, string entityName, string fieldName, object value, ComparisonType comparisonType)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));

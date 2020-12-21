@@ -31,15 +31,16 @@
                 var accomulatedResult = string.Empty;
                 var innerFilters = filterGroup.InnerGroups.Where(x => x.FilterJoinType != FilterJoinType.None).OrderBy(x => x.FilterJoinType);
 
+                var filterJointypeOperator = filterGroup.FilterJoinType.GetSqlOperator();
+
                 foreach (var filterGroupItem in innerFilters)
                 {
                     var sqlFilter = BuildWhereFilter(filterGroupItem, arguments);
-                    var filterJointypeOperator = filterGroupItem.FilterJoinType.GetSqlOperator();
 
                     accomulatedResult +=
                         string.IsNullOrEmpty(accomulatedResult) 
-                        ? $"({sqlFilter})"
-                        : $"{Environment.NewLine}{filterJointypeOperator} ({sqlFilter})";
+                        ? $"{sqlFilter}"
+                        : $"{Environment.NewLine}{filterJointypeOperator} {sqlFilter}";
                 }
 
                 return accomulatedResult;
