@@ -8,7 +8,7 @@
 
     using Xunit;
 
-    public class MySqlFilterBuilderTests: BaseTests
+    public class MySqlFilterBuilderTests : BaseTests
     {
         private MySqlFilterBuilder FilterBuilder { get; }
 
@@ -33,7 +33,7 @@
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
-            var argumentsAsPairArray = arguments?.ToArray();
+            var argumentsAsPairArray = arguments.ToArray();
 
             Assert.NotNull(sqlStatement);
             Assert.NotNull(arguments);
@@ -59,7 +59,7 @@
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
-            var argumentsAsPairArray = arguments?.ToArray();
+            var argumentsAsPairArray = arguments.ToArray();
             var argumentsKeys = argumentsAsPairArray.Select(x => x.Key);
             var argumentsValues = argumentsAsPairArray.Select(x => x.Value);
 
@@ -91,7 +91,7 @@
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
-            var argumentsAsPairArray = arguments?.ToArray();
+            var argumentsAsPairArray = arguments.ToArray();
             var argumentsKeys = argumentsAsPairArray.Select(x => x.Key);
             var argumentsValues = argumentsAsPairArray.Select(x => x.Value);
 
@@ -125,7 +125,7 @@
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
-            var argumentsAsPairArray = arguments?.ToArray();
+            var argumentsAsPairArray = arguments.ToArray();
             var argumentsKeys = argumentsAsPairArray.Select(x => x.Key);
             var argumentsValues = argumentsAsPairArray.Select(x => x.Value);
 
@@ -165,7 +165,7 @@
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
-            var argumentsAsPairArray = arguments?.ToArray();
+            var argumentsAsPairArray = arguments.ToArray();
             var argumentsKeys = argumentsAsPairArray.Select(x => x.Key);
             var argumentsValues = argumentsAsPairArray.Select(x => x.Value);
 
@@ -180,6 +180,43 @@
 
             CommonAssert.Collections(expectedArgumentValues, argumentsValues,
                 (expected, actual) => Assert.Equal(expected, actual));
+        }
+
+        [Fact]
+        public void ShouldBuildWhereSqlStatementsWhenFilterContainsSingleDeepGroup()
+        {
+            var expectedSqlStatement = "([MiddleName] EQUAL @TestFilterItem1EntityMiddleName)";
+            var expectedArgumentKey = "TestFilterItem1EntityMiddleName";
+            var expectedArgumentValue = "MiddleName";
+            var expectedArgumentsCount = 1;
+
+            var filter = new QueryFilterGroup(nameof(Driver), "TestFilter", FilterJoinType.Or, new[] {
+                new QueryFilterGroup(nameof(Driver), "InnerFilter1", FilterJoinType.Or, new[] {
+                    new QueryFilterGroup(nameof(Driver), "InnerFilter2", FilterJoinType.Or, new[] {
+                        new QueryFilterGroup(nameof(Driver), "InnerFilter3", FilterJoinType.Or, new[] {
+                            new QueryFilterGroup(nameof(Driver), "InnerFilter4", FilterJoinType.Or, new[] {
+                                new QueryFilterGroup(nameof(Driver), "InnerFilter5", FilterJoinType.Or, new[] {
+                                    new QueryFilter("TestFilterItem1", nameof(Driver), nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
+                                })
+                            })
+                        })
+                    })
+                }),
+            });
+
+            var (sqlStatement, arguments) = FilterBuilder.Build(filter);
+            var argumentsAsPairArray = arguments.ToArray();
+            var argumentsKeys = argumentsAsPairArray.Select(x => x.Key);
+            var argumentsValues = argumentsAsPairArray.Select(x => x.Value);
+
+            Assert.NotNull(sqlStatement);
+            Assert.NotNull(arguments);
+
+            Assert.Equal(expectedSqlStatement, sqlStatement);
+            Assert.Equal(expectedArgumentsCount, argumentsAsPairArray.Length);
+
+            Assert.Equal(expectedArgumentKey, argumentsAsPairArray[0].Key);
+            Assert.Equal(expectedArgumentValue, argumentsAsPairArray[0].Value);
         }
     }
 }

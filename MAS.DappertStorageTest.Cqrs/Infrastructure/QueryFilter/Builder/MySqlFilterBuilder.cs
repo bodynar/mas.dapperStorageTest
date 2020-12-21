@@ -26,7 +26,6 @@
             if (filterGroup.InnerGroups.Any())
             {
                 // TODO: log empty groups
-                // TODO: wrap groups
 
                 var accomulatedResult = string.Empty;
                 var innerFilters = filterGroup.InnerGroups.Where(x => x.FilterJoinType != FilterJoinType.None).OrderBy(x => x.FilterJoinType);
