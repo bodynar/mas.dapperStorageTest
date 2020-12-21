@@ -14,7 +14,7 @@
             var entityName = "TESTENTITYNAME";
             var expectedExceptionMessage = "Entity name \"TESTENTITYNAME\" is not valid or isn't presented in database.";
             var command = new DeleteCommand(entityName, Guid.Empty);
-            var handler = new DeleteCommandHandler(new MockDbConnectionFactory(), null);
+            var handler = new DeleteCommandHandler(DbConnectionFactory, FilterBuilder);
 
             var exception =
                 Record.Exception(
@@ -32,11 +32,11 @@
             // TODO: replace this config with InMemoryRepo (sql lite or ormlite)
 
             var dbConnectionFactory = new MockDbConnectionFactory();
-            var handler = new DeleteCommandHandler(dbConnectionFactory, null);
             var entityName = "Driver";
             var command = new DeleteCommand(entityName, Guid.Empty);
+            var handler = new DeleteCommandHandler(DbConnectionFactory, FilterBuilder);
 
-            handler.Handle(command);
+            //handler.Handle(command);
         }
     }
 }

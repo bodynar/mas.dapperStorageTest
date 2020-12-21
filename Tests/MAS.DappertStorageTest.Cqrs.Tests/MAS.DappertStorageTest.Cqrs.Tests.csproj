@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="Moq" Version="4.15.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
@@ -17,9 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MAS.DapperStorage.Test.Models\1. MAS.DapperStorageTest.Models.csproj" />
-    <ProjectReference Include="..\MAS.DapperStrorageTest.Infrastructure\2. MAS.DapperStorageTest.Infrastructure.csproj" />
-    <ProjectReference Include="..\MAS.DappertStorageTest.Cqrs\3. MAS.DappertStorageTest.Cqrs.csproj" />
+    <ProjectReference Include="..\..\MAS.DapperStorage.Test.Models\1. MAS.DapperStorageTest.Models.csproj" />
+    <ProjectReference Include="..\..\MAS.DapperStrorageTest.Infrastructure\2. MAS.DapperStorageTest.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\MAS.DappertStorageTest.Cqrs\3. MAS.DappertStorageTest.Cqrs.csproj" />
+    <ProjectReference Include="..\MAS.DapperStorageTest.Infrastructure.Tests\MAS.DapperStorageTest.Infrastructure.Tests.csproj" />
   </ItemGroup>
 
 </Project>
