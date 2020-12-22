@@ -3,8 +3,11 @@
     using System;
     using System.Linq;
 
+    using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Tests;
     using MAS.DapperStorageTest.Models;
+
+    using Moq;
 
     using Xunit;
 
@@ -14,7 +17,7 @@
 
         public MySqlFilterBuilderTests()
         {
-            FilterBuilder = new MySqlFilterBuilder();
+            FilterBuilder = new MySqlFilterBuilder(Logger);
         }
 
         [Fact]
