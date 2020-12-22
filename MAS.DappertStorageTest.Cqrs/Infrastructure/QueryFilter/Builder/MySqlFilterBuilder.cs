@@ -5,12 +5,16 @@
     using System.Dynamic;
     using System.Linq;
 
+    using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class MySqlFilterBuilder : IFilterBuilder
     {
-        public MySqlFilterBuilder()
+        private ILogger Logger { get; }
+
+        public MySqlFilterBuilder(ILogger logger)
         {
+            Logger = logger;
         }
 
         public (string, ExpandoObject) Build(QueryFilterGroup queryFilterGroup)
@@ -25,10 +29,14 @@
         {
             if (filterGroup.InnerGroups.Any())
             {
-                // TODO: log empty groups
-
                 var accomulatedResult = string.Empty;
                 var innerFilters = filterGroup.InnerGroups.Where(x => x.FilterJoinType != FilterJoinType.None).OrderBy(x => x.FilterJoinType);
+
+                if (innerFilters.Count() != filterGroup.InnerGroups.Count())
+                {
+                    var emptyFilters = filterGroup.InnerGroups.Where(x => x.FilterJoinType == FilterJoinType.None).Select(x => x.Name);
+                    Logger.Warn($"[{nameof(MySqlFilterBuilder)}] Empty filter groups: [{string.Join(", ", emptyFilters)}]");
+                }
 
                 var filterJointypeOperator = filterGroup.FilterJoinType.GetSqlOperator();
 
@@ -37,7 +45,7 @@
                     var sqlFilter = BuildWhereFilter(filterGroupItem, arguments);
 
                     accomulatedResult +=
-                        string.IsNullOrEmpty(accomulatedResult) 
+                        string.IsNullOrEmpty(accomulatedResult)
                         ? $"{sqlFilter}"
                         : $"{Environment.NewLine}{filterJointypeOperator} {sqlFilter}";
                 }
@@ -56,12 +64,17 @@
             {
                 throw new ArgumentException($"{nameof(BuildWhereFilterGroupFromFields)} can be used only with deepest filter group.");
             }
-            
+
             var sqlFilter = string.Empty;
             var whereSqlParts = new List<string>();
 
-            // TODO: log empty filters
             var filterItems = filterGroup.Filters.Where(filter => filter.ComparisonType != ComparisonType.None);
+
+            if (filterItems.Count() != filterGroup.Filters.Count())
+            {
+                var emptyFilters = filterGroup.Filters.Where(x => x.ComparisonType == ComparisonType.None).Select(x => x.Name);
+                Logger.Warn($"[{nameof(MySqlFilterBuilder)}] Empty filter items: [{string.Join(", ", emptyFilters)}]");
+            }
 
             foreach (var filter in filterItems)
             {
@@ -74,13 +87,13 @@
                 }
                 else
                 {
-                    // TODO: log
+                    Logger.Warn($"[{nameof(MySqlFilterBuilder)}] Comparison operator not valid \"{filter.ComparisonType}\".");
                     continue;
                 }
             }
 
             var joinOperator = filterGroup.FilterJoinType.GetSqlOperator();
-            
+
             return $"({string.Join($"{Environment.NewLine}{joinOperator} ", whereSqlParts)})";
         }
     }
