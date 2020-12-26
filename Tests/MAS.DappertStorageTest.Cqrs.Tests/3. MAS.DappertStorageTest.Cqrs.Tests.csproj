@@ -21,7 +21,7 @@
     <ProjectReference Include="..\..\MAS.DapperStorage.Test.Models\1. MAS.DapperStorageTest.Models.csproj" />
     <ProjectReference Include="..\..\MAS.DapperStrorageTest.Infrastructure\2. MAS.DapperStorageTest.Infrastructure.csproj" />
     <ProjectReference Include="..\..\MAS.DappertStorageTest.Cqrs\3. MAS.DappertStorageTest.Cqrs.csproj" />
-    <ProjectReference Include="..\MAS.DapperStorageTest.Infrastructure.Tests\MAS.DapperStorageTest.Infrastructure.Tests.csproj" />
+    <ProjectReference Include="..\MAS.DapperStorageTest.Infrastructure.Tests\2. MAS.DapperStorageTest.Infrastructure.Tests.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,6 +8,8 @@
     {
         public MockDbConnection Connection { get; } = new MockDbConnection();
 
+        public string DatabaseName => string.Empty;
+
         public IDbConnection CreateDbConnection()
         {
             return Connection;
