@@ -7,8 +7,6 @@
     using MAS.DapperStorageTest.Infrastructure.Tests;
     using MAS.DapperStorageTest.Models;
 
-    using Moq;
-
     using Xunit;
 
     public class MySqlFilterBuilderTests : BaseTests
@@ -220,6 +218,54 @@
 
             Assert.Equal(expectedArgumentKey, argumentsAsPairArray[0].Key);
             Assert.Equal(expectedArgumentValue, argumentsAsPairArray[0].Value);
+        }
+
+        [Fact]
+        public void ShouldLogEmptyFieldFilterStatements()
+        {
+            var filterName = "TestFilter";
+            var filterItemNames = new[] { "TestFilterItem1", "TestFilterItem2", "TestFilterItem3" };
+            var expectedWarnMessage = "[MySqlFilterBuilder] Empty filter items: [TestFilterItem1, TestFilterItem2, TestFilterItem3]";
+            var expectedWarningsCount = 1;
+
+            var filter = new QueryFilterGroup(nameof(Driver), filterName, FilterJoinType.And, new[] {
+                new QueryFilter(filterItemNames[0], nameof(Driver), nameof(Driver.BirthDate), DateTime.UtcNow, ComparisonType.None),
+                new QueryFilter(filterItemNames[1], nameof(Driver), nameof(Driver.CreatedOn), DateTime.UtcNow, ComparisonType.None),
+                new QueryFilter(filterItemNames[2], nameof(Driver), nameof(Driver.ModifiedOn), DateTime.UtcNow, ComparisonType.None),
+            });
+
+            FilterBuilder.Build(filter);
+            var warnings = GetLogs(LogLevel.Warn);
+
+            Assert.NotEmpty(warnings);
+            Assert.Equal(expectedWarningsCount, warnings.Count());
+
+            var firstWarning = warnings.First();
+            Assert.Equal(expectedWarnMessage, firstWarning);
+        }
+
+        [Fact]
+        public void ShouldLogEmptyGroupFilterStatements()
+        {
+            var filterName = "TestFilter";
+            var filterItemNames = new[] { "TestFilterGroup1", "TestFilterGroup2", "TestFilterGroup3" };
+            var expectedWarnMessage = "[MySqlFilterBuilder] Empty filter groups: [TestFilterGroup1, TestFilterGroup2, TestFilterGroup3]";
+            var expectedWarningsCount = 1;
+
+            var filter = new QueryFilterGroup(nameof(Driver), filterName, FilterJoinType.And, new[] {
+                new QueryFilterGroup(nameof(Driver), filterItemNames[0], FilterJoinType.None, new QueryFilter[] { }),
+                new QueryFilterGroup(nameof(Driver), filterItemNames[1], FilterJoinType.None, new QueryFilter[] { }),
+                new QueryFilterGroup(nameof(Driver), filterItemNames[2], FilterJoinType.None, new QueryFilter[] { })
+            });
+
+            FilterBuilder.Build(filter);
+            var warnings = GetLogs(LogLevel.Warn);
+
+            Assert.NotEmpty(warnings);
+            Assert.Equal(expectedWarningsCount, warnings.Count());
+
+            var firstWarning = warnings.First();
+            Assert.Equal(expectedWarnMessage, firstWarning);
         }
     }
 }
