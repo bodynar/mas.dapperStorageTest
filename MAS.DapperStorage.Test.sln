@@ -20,9 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution items", "0. Sol
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{52CB5C46-46A4-4F87-920A-046749E26F1F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3. MAS.DappertStorageTest.Cqrs.Tests", "Tests\MAS.DappertStorageTest.Cqrs.Tests\MAS.DappertStorageTest.Cqrs.Tests.csproj", "{F3797D24-B18D-48D4-8BEA-35098EF708BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAS.DappertStorageTest.Cqrs.Tests", "Tests\MAS.DappertStorageTest.Cqrs.Tests\MAS.DappertStorageTest.Cqrs.Tests.csproj", "{F3797D24-B18D-48D4-8BEA-35098EF708BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2. MAS.DapperStorageTest.Infrastructure.Tests", "Tests\MAS.DapperStorageTest.Infrastructure.Tests\MAS.DapperStorageTest.Infrastructure.Tests.csproj", "{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAS.DapperStorageTest.Infrastructure.Tests", "Tests\MAS.DapperStorageTest.Infrastructure.Tests\MAS.DapperStorageTest.Infrastructure.Tests.csproj", "{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
