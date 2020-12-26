@@ -1,5 +1,6 @@
 ﻿namespace MAS.DapperStorageTest.Configuration
 {
+    using System;
     using System.Data;
 
     using MAS.DapperStorageTest.Infrastructure;
@@ -10,9 +11,12 @@
     {
         private string ConnectionString { get; }
 
-        public DbConnectionFactory(string connectionString)
+        public string DatabaseName { get; }
+
+        public DbConnectionFactory(string connectionString, string databaseName)
         {
-            ConnectionString = connectionString;
+            ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            DatabaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName));
         }
 
         public IDbConnection CreateDbConnection()

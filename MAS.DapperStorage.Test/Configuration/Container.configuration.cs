@@ -2,6 +2,7 @@
 {
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
+    using MAS.DappertStorageTest.Cqrs;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     using Microsoft.Extensions.Configuration;
@@ -13,10 +14,12 @@
         public static Container Configure(this Container container, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var dbName = configuration.GetValue<string>("DatabaseName");
 
             // TODO
-            container.Register(typeof(IResolver), typeof(Resolver), Lifestyle.Singleton);
-            container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString), Lifestyle.Singleton);
+            container.Register<IResolver, Resolver>(Lifestyle.Singleton);
+            container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString, dbName), Lifestyle.Singleton);
+            container.Register<IFilterBuilder, MySqlFilterBuilder>();
 
             container.Register(
                 typeof(IQueryHandler<,>),

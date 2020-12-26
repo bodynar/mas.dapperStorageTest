@@ -12,6 +12,7 @@
         public static void Configure(this IServiceCollection services, IConfiguration configuration, Container container)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var dbName = configuration.GetValue<string>("DatabaseName");
 
             services.AddControllers()
                 .Services
@@ -22,7 +23,7 @@
                     )
             ;
 
-            services.AddSingleton<IDbConnectionFactory>((_) => new DbConnectionFactory(connectionString));
+            services.AddSingleton<IDbConnectionFactory>((_) => new DbConnectionFactory(connectionString, dbName));
         }
     }
 }

@@ -10,8 +10,6 @@
 
     public abstract class BaseCqrsHandler
     {
-        private const string UseDataBaseStatement = "USE [DapperStorageTest]";
-
         private static IEnumerable<string> DeclaredEntities { get; set; }
 
         protected static IEnumerable<string> DefaultEntityFields { get; private set; }
@@ -60,7 +58,7 @@
 
         protected string BuildQuery(string queryPart)
         {
-            return $"{UseDataBaseStatement};{Environment.NewLine}{queryPart}";
+            return $"USE [{DbConnectionFactory.DatabaseName}];{Environment.NewLine}{queryPart}";
         }
 
         protected (string, ExpandoObject) BuildWhereFilter(string entityName, QueryFilterGroup filter)

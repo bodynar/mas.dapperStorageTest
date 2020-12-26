@@ -4,6 +4,8 @@
 
     public interface IDbConnectionFactory
     {
+        string DatabaseName { get; }
+
         IDbConnection CreateDbConnection();
     }
 }
