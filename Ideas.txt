@@ -1,0 +1,8 @@
+	Ideas and thoughts about project and features.
+
+		- Insert \ Update \ Delete commands in group - to wrap into single transaction
+			and configure it somehow in single request.
+				Possible another API with IDictionary<string, object> = command & args 
+					=> build Insert\Update\Delete from this and execute in single transaction
+
+		- 

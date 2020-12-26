@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution items", "0. Solution items", "{6A7EE1DE-80A4-43E8-BE2E-01778CF34C50}"
 	ProjectSection(SolutionItems) = preProject
 		DbInit.sql = DbInit.sql
+		Ideas.txt = Ideas.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{52CB5C46-46A4-4F87-920A-046749E26F1F}"
