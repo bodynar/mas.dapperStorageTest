@@ -5,34 +5,27 @@
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
-    using MAS.DapperStorageTest.Infrastructure.Models;
 
-    // TODO: Add rows count
-    // TODO: Add rows skip
-    public class SelectQuery : IQuery<WrappedEntity>
+    public class SelectQuery : IQuery<SelectQueryResponse>
     {
-        public string EntityName { get; set; }
+        public string EntityName { get; }
 
-        public IEnumerable<string> Fields { get; }
+        public int Count { get; }
 
-        public Guid? EntityId { get; }
+        public int Offset { get; }
 
-        public IDictionary<string, string> Filters { get; }
+        public IEnumerable<string> Columns { get; }
 
         public QueryFilterGroup FilterGroup { get; }
 
-        public SelectQuery(string entityName, IEnumerable<string> fields, Guid? entityId)
-        {
-            EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
-            Fields = fields ?? Enumerable.Empty<string>();
-            EntityId = entityId;
-        }
+        public IEnumerable<string> OrderingColumns { get; set; }
 
-        public SelectQuery(string entityName, IEnumerable<string> fields, QueryFilterGroup filterGroup)
+        public SelectQuery(string entityName, IEnumerable<string> columns, QueryFilterGroup filterGroup, IEnumerable<string> orderingColumns)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
-            Fields = fields ?? Enumerable.Empty<string>();
+            Columns = columns ?? Enumerable.Empty<string>();
             FilterGroup = filterGroup ?? throw new ArgumentNullException(nameof(filterGroup));
+            OrderingColumns = orderingColumns ?? Enumerable.Empty<string>();
         }
     }
 }

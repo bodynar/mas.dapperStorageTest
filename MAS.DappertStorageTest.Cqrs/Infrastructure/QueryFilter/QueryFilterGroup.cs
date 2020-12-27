@@ -12,14 +12,14 @@
 
         public FilterJoinType FilterJoinType { get; }
 
-        public IEnumerable<QueryFilter> Filters { get; } = Enumerable.Empty<QueryFilter>();
+        public IEnumerable<QueryFilterItem> Filters { get; } = Enumerable.Empty<QueryFilterItem>();
 
         public IEnumerable<QueryFilterGroup> InnerGroups { get; } = Enumerable.Empty<QueryFilterGroup>();
 
         public bool IsEmpty
             => !Filters.Any() && !InnerGroups.Any();
 
-        public QueryFilterGroup(string entityName, string name, FilterJoinType filterJoinType, IEnumerable<QueryFilter> filters)
+        public QueryFilterGroup(string entityName, string name, FilterJoinType filterJoinType, IEnumerable<QueryFilterItem> filters)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             Name = name ?? throw new ArgumentNullException(nameof(name));
