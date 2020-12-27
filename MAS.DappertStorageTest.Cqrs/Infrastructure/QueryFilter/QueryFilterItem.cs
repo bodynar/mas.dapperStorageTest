@@ -2,11 +2,9 @@
 {
     using System;
 
-    public class QueryFilter
+    public class QueryFilterItem
     {
         public string Name { get; }
-
-        public string EntityName { get; }
 
         public string FieldName { get; }
 
@@ -14,10 +12,9 @@
 
         public ComparisonType ComparisonType { get; }
 
-        public QueryFilter(string name, string entityName, string fieldName, object value, ComparisonType comparisonType)
+        public QueryFilterItem(string name, string fieldName, object value, ComparisonType comparisonType)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             FieldName = fieldName ?? throw new ArgumentNullException(nameof(fieldName));
             Value = value ?? throw new ArgumentNullException(nameof(value));
             ComparisonType = comparisonType;
