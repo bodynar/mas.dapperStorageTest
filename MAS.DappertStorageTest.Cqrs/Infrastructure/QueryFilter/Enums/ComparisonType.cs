@@ -5,10 +5,10 @@
         [SqlOperator("NONE")]
         None = 0,
 
-        [SqlOperator("EQUAL")]
+        [SqlOperator("=")]
         Equal = 1,
 
-        [SqlOperator("NOT EQUAL")]
+        [SqlOperator("!=")]
         NotEqual = 2
     }
 }
