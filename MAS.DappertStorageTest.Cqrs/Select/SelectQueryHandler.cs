@@ -49,7 +49,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Query(sqlQuery, arguments);
+                result = connection.Query(sqlQuery, arguments); // TODO: Fix NotSupportedException: The member IdFilterEntityId of type System.Text.Json.JsonElement cannot be used as a parameter value
             }
 
             return result.Select(entity => entity as IDictionary<string, object>);
