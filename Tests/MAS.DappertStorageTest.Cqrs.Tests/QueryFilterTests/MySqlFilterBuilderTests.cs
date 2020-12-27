@@ -30,7 +30,7 @@
             var expectedArgumentsCount = 1;
 
             var filter = new QueryFilterGroup(nameof(Driver), filterName, FilterJoinType.And, new[] {
-                new QueryFilter(filterItemName, nameof(Driver), nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual)
+                new QueryFilterItem(filterItemName, nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual)
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
@@ -55,8 +55,8 @@
             var expectedArgumentsCount = 2;
 
             var filter = new QueryFilterGroup(nameof(Driver), "TestFilter", FilterJoinType.And, new[] {
-                new QueryFilter("TestFilterItem1", nameof(Driver), nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
-                new QueryFilter("TestFilterItem2", nameof(Driver), nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
+                new QueryFilterItem("TestFilterItem1", nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
+                new QueryFilterItem("TestFilterItem2", nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
@@ -87,8 +87,8 @@
             var expectedArgumentsCount = 2;
 
             var filter = new QueryFilterGroup(nameof(Driver), "TestFilter", FilterJoinType.Or, new[] {
-                new QueryFilter("TestFilterItem1", nameof(Driver), nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
-                new QueryFilter("TestFilterItem2", nameof(Driver), nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
+                new QueryFilterItem("TestFilterItem1", nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
+                new QueryFilterItem("TestFilterItem2", nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
             });
 
             var (sqlStatement, arguments) = FilterBuilder.Build(filter);
@@ -120,8 +120,8 @@
 
             var filter = new QueryFilterGroup(nameof(Driver), "TestFilter", FilterJoinType.Or, new[] {
                 new QueryFilterGroup(nameof(Driver), "InnerFilter", FilterJoinType.And, new[] {
-                    new QueryFilter("TestFilterItem1", nameof(Driver), nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
-                    new QueryFilter("TestFilterItem2", nameof(Driver), nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
+                    new QueryFilterItem("TestFilterItem1", nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
+                    new QueryFilterItem("TestFilterItem2", nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
                 })
             });
 
@@ -156,12 +156,12 @@
 
             var filter = new QueryFilterGroup(nameof(Driver), "TestFilter", FilterJoinType.Or, new[] {
                 new QueryFilterGroup(nameof(Driver), "InnerFilter", FilterJoinType.And, new[] {
-                    new QueryFilter("TestFilterItem1", nameof(Driver), nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
-                    new QueryFilter("TestFilterItem2", nameof(Driver), nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
+                    new QueryFilterItem("TestFilterItem1", nameof(Driver.BirthDate), comparisonValue, ComparisonType.NotEqual),
+                    new QueryFilterItem("TestFilterItem2", nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
                 }),
                 new QueryFilterGroup(nameof(Driver), "InnerFilter", FilterJoinType.And, new[] {
-                    new QueryFilter("TestFilterItem3", nameof(Driver), nameof(Driver.IsMusicLover), true, ComparisonType.Equal),
-                    new QueryFilter("TestFilterItem4", nameof(Driver), nameof(Driver.IsTalkative), false, ComparisonType.Equal)
+                    new QueryFilterItem("TestFilterItem3", nameof(Driver.IsMusicLover), true, ComparisonType.Equal),
+                    new QueryFilterItem("TestFilterItem4", nameof(Driver.IsTalkative), false, ComparisonType.Equal)
                 })
             });
 
@@ -197,7 +197,7 @@
                         new QueryFilterGroup(nameof(Driver), "InnerFilter3", FilterJoinType.Or, new[] {
                             new QueryFilterGroup(nameof(Driver), "InnerFilter4", FilterJoinType.Or, new[] {
                                 new QueryFilterGroup(nameof(Driver), "InnerFilter5", FilterJoinType.Or, new[] {
-                                    new QueryFilter("TestFilterItem1", nameof(Driver), nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
+                                    new QueryFilterItem("TestFilterItem1", nameof(Driver.MiddleName), "MiddleName", ComparisonType.Equal)
                                 })
                             })
                         })
@@ -229,9 +229,9 @@
             var expectedWarningsCount = 1;
 
             var filter = new QueryFilterGroup(nameof(Driver), filterName, FilterJoinType.And, new[] {
-                new QueryFilter(filterItemNames[0], nameof(Driver), nameof(Driver.BirthDate), DateTime.UtcNow, ComparisonType.None),
-                new QueryFilter(filterItemNames[1], nameof(Driver), nameof(Driver.CreatedOn), DateTime.UtcNow, ComparisonType.None),
-                new QueryFilter(filterItemNames[2], nameof(Driver), nameof(Driver.ModifiedOn), DateTime.UtcNow, ComparisonType.None),
+                new QueryFilterItem(filterItemNames[0], nameof(Driver.BirthDate), DateTime.UtcNow, ComparisonType.None),
+                new QueryFilterItem(filterItemNames[1], nameof(Driver.CreatedOn), DateTime.UtcNow, ComparisonType.None),
+                new QueryFilterItem(filterItemNames[2], nameof(Driver.ModifiedOn), DateTime.UtcNow, ComparisonType.None),
             });
 
             FilterBuilder.Build(filter);
@@ -253,9 +253,9 @@
             var expectedWarningsCount = 1;
 
             var filter = new QueryFilterGroup(nameof(Driver), filterName, FilterJoinType.And, new[] {
-                new QueryFilterGroup(nameof(Driver), filterItemNames[0], FilterJoinType.None, new QueryFilter[] { }),
-                new QueryFilterGroup(nameof(Driver), filterItemNames[1], FilterJoinType.None, new QueryFilter[] { }),
-                new QueryFilterGroup(nameof(Driver), filterItemNames[2], FilterJoinType.None, new QueryFilter[] { })
+                new QueryFilterGroup(nameof(Driver), filterItemNames[0], FilterJoinType.None, new QueryFilterItem[] { }),
+                new QueryFilterGroup(nameof(Driver), filterItemNames[1], FilterJoinType.None, new QueryFilterItem[] { }),
+                new QueryFilterGroup(nameof(Driver), filterItemNames[2], FilterJoinType.None, new QueryFilterItem[] { })
             });
 
             FilterBuilder.Build(filter);
