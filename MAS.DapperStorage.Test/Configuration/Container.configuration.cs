@@ -20,6 +20,7 @@
             container.Register<IResolver, Resolver>(Lifestyle.Singleton);
             container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString, dbName), Lifestyle.Singleton);
             container.Register<IFilterBuilder, MySqlFilterBuilder>();
+            container.Register<ILogger, Logger>(Lifestyle.Singleton);
 
             container.Register(
                 typeof(IQueryHandler<,>),
