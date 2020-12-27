@@ -39,14 +39,15 @@
         }
 
         [HttpGet("[action]")]
-        public string Select([FromBody] SelectRequest selectRequest)
+        public SelectResponse Select([FromBody] SelectRequest selectRequest)
         {
             EnsureNotNull(selectRequest, nameof(selectRequest));
 
-            var query = new SelectQuery(selectRequest.EntityName, selectRequest.Fields, selectRequest.EntityId);
-            var result = QueryProcessor.Execute(query);
+            var result = QueryProcessor.Execute(
+                new SelectQuery(selectRequest.EntityName, selectRequest.Columns, selectRequest.Filters, selectRequest.OrderingColumns)
+            );
 
-            return result.ToString();
+            return new SelectResponse(result.Entities, result.EntityName, result.Count, result.Offset, result.Columns);
         }
 
         private static void EnsureNotNull<TValue>(TValue value, string paramName)
