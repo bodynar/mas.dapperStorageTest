@@ -5,4 +5,4 @@
 				Possible another API with IDictionary<string, object> = command & args 
 					=> build Insert\Update\Delete from this and execute in single transaction
 
-		- 
+		- Wrap api into result object with success flag, error and result
