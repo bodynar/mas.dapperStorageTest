@@ -28,14 +28,14 @@
             => nameof(DataController);
 
         [HttpPost("[action]")]
-        public Guid Insert([FromBody] InsertRequest insertRequest)
+        public InsertResponse Insert([FromBody] InsertRequest insertRequest)
         {
             EnsureNotNull(insertRequest, nameof(insertRequest));
 
             var command = new InsertCommand(insertRequest.EntityName, insertRequest.Values);
             CommandProcessor.Execute(command);
 
-            return command.EntityId;
+            return new InsertResponse(command.EntityId);
         }
 
         [HttpGet("[action]")]

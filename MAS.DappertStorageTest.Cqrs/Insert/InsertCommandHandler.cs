@@ -1,6 +1,7 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
     using System;
+    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
 
@@ -24,9 +25,10 @@
             var fieldNames = string.Join(", ", fields.Select(pair => $"[{pair.Key}]"));
             var fieldValueBindings = string.Join(", ", fields.Select(pair => $"@NewEntity{pair.Key}"));
 
-            dynamic arguments = new ExpandoObject();
-            arguments.NewEntityId = Guid.NewGuid();
-            arguments.NewEntityCreatedAt = DateTime.UtcNow;
+            var entityId = Guid.NewGuid();
+            var arguments = new ExpandoObject();
+            arguments.TryAdd("NewEntityId", entityId);
+            arguments.TryAdd("NewEntityCreatedAt", DateTime.UtcNow);
 
             foreach (var field in fields)
             {
@@ -36,10 +38,10 @@
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
                 var sqlQuery = BuildQuery($"INSERT INTO [{command.EntityName}] ([Id], [CreatedOn], {fieldNames}) VALUES (@NewEntityId, @NewEntityCreatedAt, {fieldValueBindings})");
-                connection.Execute(sqlQuery, (object)arguments);
+                connection.Execute(sqlQuery, arguments);
             }
 
-            command.EntityId = arguments.NewEntityId;
+            command.EntityId = entityId;
         }
     }
 }
