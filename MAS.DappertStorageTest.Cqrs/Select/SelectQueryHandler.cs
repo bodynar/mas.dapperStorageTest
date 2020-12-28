@@ -37,8 +37,6 @@
             return new SelectQueryResponse(query.EntityName, entities, query.Count, query.Offset, query.Columns, query.OrderingColumns);
         }
 
-        #region Not public API
-
         private IEnumerable<IDictionary<string, object>> GetByFilters(SelectQuery query)
         {
             var (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
@@ -49,12 +47,10 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Query(sqlQuery, arguments); // TODO: Fix NotSupportedException: The member IdFilterEntityId of type System.Text.Json.JsonElement cannot be used as a parameter value
+                result = connection.Query(sqlQuery, arguments);
             }
 
             return result.Select(entity => entity as IDictionary<string, object>);
         }
-
-        #endregion
     }
 }

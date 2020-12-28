@@ -7,9 +7,9 @@
     {
         public string EntityName { get; set; }
 
-        public int Count { get; }
+        public int Count { get; set; }
 
-        public int Offset { get; }
+        public int Offset { get; set; }
 
         public ApiFilterGroup Filters { get; set; }
 

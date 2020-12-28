@@ -8,7 +8,7 @@
 
         public string FieldName { get; set; }
 
-        public object Value { get; set; }
+        public string Value { get; set; }
 
         public ComparisonType ComparisonType { get; set; }
 
