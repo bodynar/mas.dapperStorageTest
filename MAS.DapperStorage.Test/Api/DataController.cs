@@ -44,7 +44,7 @@
             EnsureNotNull(selectRequest, nameof(selectRequest));
 
             var result = QueryProcessor.Execute(
-                new SelectQuery(selectRequest.EntityName, selectRequest.Columns, selectRequest.Filters, selectRequest.OrderingColumns)
+                new SelectQuery(selectRequest.EntityName, selectRequest.Columns, selectRequest.Filters, selectRequest.OrderingColumns, selectRequest.Count, selectRequest.Offset)
             );
 
             return new SelectResponse(result.Entities, result.EntityName, result.Count, result.Offset, result.Columns);

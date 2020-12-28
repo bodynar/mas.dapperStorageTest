@@ -19,6 +19,11 @@
 
         public static implicit operator QueryFilterGroup(ApiFilterGroup apiFilterGroup)
         {
+            if (apiFilterGroup == null)
+            {
+                return null;
+            }
+
             return
                 apiFilterGroup.InnerGroups.Any()
                 ? new QueryFilterGroup(apiFilterGroup.EntityName, apiFilterGroup.Name, apiFilterGroup.FilterJoinType, apiFilterGroup.InnerGroups.Select(x => (QueryFilterGroup)x))

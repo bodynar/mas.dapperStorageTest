@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
     using Dapper;
 
@@ -39,10 +40,22 @@
 
         private IEnumerable<IDictionary<string, object>> GetByFilters(SelectQuery query)
         {
-            var (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
             var queryColumns = !query.Columns.Any() ? "*" : string.Join(", ", query.Columns.Select(columnName => $"[{columnName}]"));
+            var sqlQueryBuilder = new StringBuilder($"SELECT {queryColumns} FROM [{query.EntityName}]");
 
-            var sqlQuery = BuildQuery($"SELECT {queryColumns} FROM [{query.EntityName}] WHERE {whereCondition}");
+            var whereCondition = string.Empty;
+            object arguments = new { };
+
+            if (query.FilterGroup != null)
+            {
+                (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
+            }
+
+            sqlQueryBuilder.Append(string.IsNullOrEmpty(whereCondition) ? "" : $" WHERE {whereCondition}");
+            sqlQueryBuilder.Append(query.Count != 0 ? $" ORDER BY [Id] OFFSET {query.Offset} ROWS FETCH NEXT {query.Count} ROWS ONLY" : "");
+
+            var sqlQuery = BuildQuery(sqlQueryBuilder.ToString());
+
             IEnumerable<dynamic> result;
 
             using (var connection = DbConnectionFactory.CreateDbConnection())

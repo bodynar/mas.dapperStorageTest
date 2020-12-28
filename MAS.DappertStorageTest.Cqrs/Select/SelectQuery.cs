@@ -18,14 +18,16 @@
 
         public QueryFilterGroup FilterGroup { get; }
 
-        public IEnumerable<string> OrderingColumns { get; set; }
+        public IEnumerable<string> OrderingColumns { get; }
 
-        public SelectQuery(string entityName, IEnumerable<string> columns, QueryFilterGroup filterGroup, IEnumerable<string> orderingColumns)
+        public SelectQuery(string entityName, IEnumerable<string> columns, QueryFilterGroup filterGroup, IEnumerable<string> orderingColumns, int count, int offset)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             Columns = columns ?? Enumerable.Empty<string>();
-            FilterGroup = filterGroup ?? throw new ArgumentNullException(nameof(filterGroup));
+            FilterGroup = filterGroup;
             OrderingColumns = orderingColumns ?? Enumerable.Empty<string>();
+            Count = count;
+            Offset = offset;
         }
     }
 }
