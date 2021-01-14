@@ -36,6 +36,20 @@
 
         #region Protected members
 
+        protected IEnumerable<string> GetNotValidFieldsForEntity(string entityName, IEnumerable<string> fieldNames)
+        {
+            var entity = typeof(EntityMarkerAttribute).Assembly
+                .GetTypes()
+                .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
+                .FirstOrDefault(type => type.Name == entityName);
+
+            var propertyNames = entity
+                .GetProperties()
+                .Select(x => x.Name);
+
+            return fieldNames.Where(fieldName => !propertyNames.Contains(fieldName));
+        }
+
         protected void EnsureFieldsAreValidForEntity(string entityName, IEnumerable<string> fieldNames)
         {
             var notValidFields = GetNotValidFieldsForEntity(entityName, fieldNames);
@@ -97,20 +111,6 @@
             return DeclaredEntities.Contains(entityName);
         }
 
-        private IEnumerable<string> GetNotValidFieldsForEntity(string entityName, IEnumerable<string> fieldNames)
-        {
-            var entity = typeof(EntityMarkerAttribute).Assembly
-                .GetTypes()
-                .Where(type => type.GetCustomAttributes(typeof(EntityMarkerAttribute), false).Any())
-                .FirstOrDefault(type => type.Name == entityName);
-
-            var propertyNames = entity
-                .GetProperties()
-                .Select(x => x.Name);
-
-            return fieldNames.Where(fieldName => !propertyNames.Contains(fieldName));
-        }
-
         private IEnumerable<string> GetFilterFiledNames(QueryFilterGroup queryFilter)
         {
             var fieldNames = new List<string>();
@@ -122,7 +122,8 @@
                     var innerFieldNames = GetFilterFiledNames(filterItem);
                     fieldNames.AddRange(innerFieldNames);
                 }
-            } else
+            }
+            else
             {
                 fieldNames.AddRange(queryFilter.Filters.Select(x => x.FieldName));
             }

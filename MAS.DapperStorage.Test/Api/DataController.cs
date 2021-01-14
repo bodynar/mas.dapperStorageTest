@@ -1,6 +1,7 @@
 ﻿namespace MAS.DapperStorageTest.Controllers
 {
     using System;
+    using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
     using MAS.DapperStorageTest.Models;
@@ -44,10 +45,14 @@
             EnsureNotNull(selectRequest, nameof(selectRequest));
 
             var result = QueryProcessor.Execute(
-                new SelectQuery(selectRequest.EntityName, selectRequest.Columns, selectRequest.Filters, selectRequest.OrderingColumns, selectRequest.Count, selectRequest.Offset)
+                new SelectQuery(
+                    selectRequest.EntityName, selectRequest.Columns, selectRequest.Filters,
+                    selectRequest.OrderingColumns.Select(x => (OrderOption)x),
+                    selectRequest.Count, selectRequest.Offset
+                )
             );
 
-            return new SelectResponse(result.Entities, result.EntityName, result.Count, result.Offset, result.Columns);
+            return new SelectResponse(result.Entities, result.EntityName, result.Count, result.Offset, result.Columns, result.Warnings);
         }
 
         private static void EnsureNotNull<TValue>(TValue value, string paramName)

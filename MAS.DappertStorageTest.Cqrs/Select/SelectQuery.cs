@@ -10,22 +10,22 @@
     {
         public string EntityName { get; }
 
-        public int Count { get; }
+        public int Count { get; set; }
 
-        public int Offset { get; }
+        public int Offset { get; set; }
 
         public IEnumerable<string> Columns { get; }
 
         public QueryFilterGroup FilterGroup { get; }
 
-        public IEnumerable<string> OrderingColumns { get; }
+        public IEnumerable<OrderOption> OrderingColumns { get; }
 
-        public SelectQuery(string entityName, IEnumerable<string> columns, QueryFilterGroup filterGroup, IEnumerable<string> orderingColumns, int count, int offset)
+        public SelectQuery(string entityName, IEnumerable<string> columns, QueryFilterGroup filterGroup, IEnumerable<OrderOption> orderingColumns, int count, int offset)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             Columns = columns ?? Enumerable.Empty<string>();
             FilterGroup = filterGroup;
-            OrderingColumns = orderingColumns ?? Enumerable.Empty<string>();
+            OrderingColumns = orderingColumns ?? Enumerable.Empty<OrderOption>();
             Count = count;
             Offset = offset;
         }

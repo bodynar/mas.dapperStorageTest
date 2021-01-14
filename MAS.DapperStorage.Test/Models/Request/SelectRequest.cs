@@ -15,6 +15,6 @@
 
         public IEnumerable<string> Columns { get; set; } = Enumerable.Empty<string>();
 
-        public IEnumerable<string> OrderingColumns { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<ApiOrderOption> OrderingColumns { get; set; } = Enumerable.Empty<ApiOrderOption>();
     }
 }

@@ -15,9 +15,15 @@
 
         public IEnumerable<string> Columns { get; }
 
-        public IEnumerable<string> OrderingColumns { get; }
+        public IEnumerable<OrderOption> OrderingColumns { get; }
 
-        public SelectQueryResponse(string entityName, IEnumerable<IDictionary<string, object>> entities, int count, int offset, IEnumerable<string> columns, IEnumerable<string> orderingColumns)
+        public IEnumerable<string> Warnings { get; }
+
+        public SelectQueryResponse(
+            string entityName, IEnumerable<IDictionary<string, object>> entities,
+            int count, int offset,
+            IEnumerable<string> columns, IEnumerable<OrderOption> orderingColumns,
+            IEnumerable<string> warnings)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             Entities = entities ?? throw new ArgumentNullException(nameof(entities));

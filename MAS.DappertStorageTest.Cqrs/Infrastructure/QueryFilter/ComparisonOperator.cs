@@ -9,7 +9,7 @@
 
         public SqlOperatorAttribute(string @operator)
         {
-            Operator = @operator;
+            Operator = @operator.ToUpper();
         }
     }
 }
