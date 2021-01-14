@@ -31,7 +31,6 @@
         {
             // TODO: replace this config with InMemoryRepo (sql lite or ormlite)
 
-            var dbConnectionFactory = new MockDbConnectionFactory();
             var entityName = "Driver";
             var command = new DeleteCommand(entityName, Guid.Empty);
             var handler = new DeleteCommandHandler(DbConnectionFactory, FilterBuilder);

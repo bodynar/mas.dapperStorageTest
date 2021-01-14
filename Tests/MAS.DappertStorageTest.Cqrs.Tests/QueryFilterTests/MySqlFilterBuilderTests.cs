@@ -24,7 +24,7 @@
             var filterName = "TestFilter";
             var filterItemName = "TestFilterItem";
             var comparisonValue = DateTime.UtcNow;
-            var expectedSqlStatement = "([BirthDate] NOT EQUAL @TestFilterItemEntityBirthDate)";
+            var expectedSqlStatement = "([BirthDate] != @TestFilterItemEntityBirthDate)";
             var expectedArgumentKey = "TestFilterItemEntityBirthDate";
             var expectedArgumentValue = comparisonValue;
             var expectedArgumentsCount = 1;
@@ -49,7 +49,7 @@
         public void ShouldBuildWhereSqlStatementsWhenFilterContainsOnlyFieldsWithAndJoinType()
         {
             var comparisonValue = DateTime.UtcNow;
-            var expectedSqlStatement = $"([BirthDate] NOT EQUAL @TestFilterItem1EntityBirthDate{Environment.NewLine}AND [MiddleName] EQUAL @TestFilterItem2EntityMiddleName)";
+            var expectedSqlStatement = $"([BirthDate] != @TestFilterItem1EntityBirthDate{Environment.NewLine}AND [MiddleName] = @TestFilterItem2EntityMiddleName)";
             var expectedArgumentKeys = new[] { "TestFilterItem1EntityBirthDate", "TestFilterItem2EntityMiddleName" };
             var expectedArgumentValues = new object[] { comparisonValue, "MiddleName" };
             var expectedArgumentsCount = 2;
@@ -81,7 +81,7 @@
         public void ShouldBuildWhereSqlStatementsWhenFilterContainsOnlyFieldsWithOrJoinType()
         {
             var comparisonValue = DateTime.UtcNow;
-            var expectedSqlStatement = $"([BirthDate] NOT EQUAL @TestFilterItem1EntityBirthDate{Environment.NewLine}OR [MiddleName] EQUAL @TestFilterItem2EntityMiddleName)";
+            var expectedSqlStatement = $"([BirthDate] != @TestFilterItem1EntityBirthDate{Environment.NewLine}OR [MiddleName] = @TestFilterItem2EntityMiddleName)";
             var expectedArgumentKeys = new[] { "TestFilterItem1EntityBirthDate", "TestFilterItem2EntityMiddleName" };
             var expectedArgumentValues = new object[] { comparisonValue, "MiddleName" };
             var expectedArgumentsCount = 2;
@@ -113,7 +113,7 @@
         public void ShouldBuildWhereSqlStatementsWhenFilterContainsSingleGroup()
         {
             var comparisonValue = DateTime.UtcNow;
-            var expectedSqlStatement = $"([BirthDate] NOT EQUAL @TestFilterItem1EntityBirthDate{Environment.NewLine}AND [MiddleName] EQUAL @TestFilterItem2EntityMiddleName)";
+            var expectedSqlStatement = $"([BirthDate] != @TestFilterItem1EntityBirthDate{Environment.NewLine}AND [MiddleName] = @TestFilterItem2EntityMiddleName)";
             var expectedArgumentKeys = new[] { "TestFilterItem1EntityBirthDate", "TestFilterItem2EntityMiddleName" };
             var expectedArgumentValues = new object[] { comparisonValue, "MiddleName" };
             var expectedArgumentsCount = 2;
@@ -148,8 +148,8 @@
         {
             var comparisonValue = DateTime.UtcNow;
             var expectedSqlStatement =
-                $"([BirthDate] NOT EQUAL @TestFilterItem1EntityBirthDate{Environment.NewLine}AND [MiddleName] EQUAL @TestFilterItem2EntityMiddleName)" +
-                $"{Environment.NewLine}OR ([IsMusicLover] EQUAL @TestFilterItem3EntityIsMusicLover{Environment.NewLine}AND [IsTalkative] EQUAL @TestFilterItem4EntityIsTalkative)";
+                $"([BirthDate] != @TestFilterItem1EntityBirthDate{Environment.NewLine}AND [MiddleName] = @TestFilterItem2EntityMiddleName)" +
+                $"{Environment.NewLine}OR ([IsMusicLover] = @TestFilterItem3EntityIsMusicLover{Environment.NewLine}AND [IsTalkative] = @TestFilterItem4EntityIsTalkative)";
             var expectedArgumentKeys = new[] { "TestFilterItem1EntityBirthDate", "TestFilterItem2EntityMiddleName", "TestFilterItem3EntityIsMusicLover", "TestFilterItem4EntityIsTalkative" };
             var expectedArgumentValues = new object[] { comparisonValue, "MiddleName", true, false };
             var expectedArgumentsCount = 4;
@@ -186,7 +186,7 @@
         [Fact]
         public void ShouldBuildWhereSqlStatementsWhenFilterContainsSingleDeepGroup()
         {
-            var expectedSqlStatement = "([MiddleName] EQUAL @TestFilterItem1EntityMiddleName)";
+            var expectedSqlStatement = "([MiddleName] = @TestFilterItem1EntityMiddleName)";
             var expectedArgumentKey = "TestFilterItem1EntityMiddleName";
             var expectedArgumentValue = "MiddleName";
             var expectedArgumentsCount = 1;
