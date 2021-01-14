@@ -15,10 +15,16 @@
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var dbName = configuration.GetValue<string>("DatabaseName");
+            var maxQueryCount = configuration.GetValue<int>("MaxQueryRows");
+
+            var queryOptions = new DbConnectionQueryOptions
+            {
+                MaxRowCount = maxQueryCount
+            };
 
             // TODO
             container.Register<IResolver, Resolver>(Lifestyle.Singleton);
-            container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString, dbName), Lifestyle.Singleton);
+            container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString, dbName, queryOptions), Lifestyle.Singleton);
             container.Register<IFilterBuilder, MySqlFilterBuilder>();
             container.Register<ILogger, Logger>(Lifestyle.Singleton);
 

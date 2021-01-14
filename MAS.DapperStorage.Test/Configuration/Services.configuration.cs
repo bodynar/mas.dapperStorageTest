@@ -13,6 +13,12 @@
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var dbName = configuration.GetValue<string>("DatabaseName");
+            var maxQueryCount = configuration.GetValue<int>("MaxQueryRows");
+
+            var queryOptions = new DbConnectionQueryOptions
+            {
+                MaxRowCount = maxQueryCount
+            };
 
             services.AddControllers()
                 .Services
@@ -23,7 +29,7 @@
                     )
             ;
 
-            services.AddSingleton<IDbConnectionFactory>((_) => new DbConnectionFactory(connectionString, dbName));
+            services.AddSingleton<IDbConnectionFactory>((_) => new DbConnectionFactory(connectionString, dbName, queryOptions));
         }
     }
 }

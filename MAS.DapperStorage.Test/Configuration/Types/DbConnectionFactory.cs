@@ -13,10 +13,13 @@
 
         public string DatabaseName { get; }
 
-        public DbConnectionFactory(string connectionString, string databaseName)
+        public DbConnectionQueryOptions QueryOptions { get; }
+
+        public DbConnectionFactory(string connectionString, string databaseName, DbConnectionQueryOptions queryOptions)
         {
             ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             DatabaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName));
+            QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
         }
 
         public IDbConnection CreateDbConnection()
