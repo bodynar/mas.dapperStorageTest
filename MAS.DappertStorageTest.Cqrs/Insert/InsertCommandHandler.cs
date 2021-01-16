@@ -23,6 +23,14 @@
             EnsureFieldsAreValidForEntity(command.EntityName, command.PropertyValues.Select(x => x.Key));
 
             var fields = command.PropertyValues.Where(pair => !DefaultEntityFields.Contains(pair.Key));
+
+            if (fields.Count() != command.PropertyValues.Count)
+            {
+                var notValidKeys = command.PropertyValues.Where(pair => DefaultEntityFields.Contains(pair.Key)).Select(x => x.Key);
+
+                command.Warnings.Add($"Cannot set value for default columns: [{string.Join(", ", notValidKeys)}]");
+            }
+
             var fieldNames = string.Join(", ", fields.Select(pair => $"[{pair.Key}]"));
             var fieldValueBindings = string.Join(", ", fields.Select(pair => $"@NewEntity{pair.Key}"));
 
@@ -36,9 +44,10 @@
                 arguments.TryAdd($"NewEntity{field.Key}", field.Value);
             }
 
+            var sqlQuery = BuildQuery($"INSERT INTO [{command.EntityName}] ([Id], [CreatedOn], {fieldNames}) VALUES (@NewEntityId, @NewEntityCreatedAt, {fieldValueBindings})");
+
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                var sqlQuery = BuildQuery($"INSERT INTO [{command.EntityName}] ([Id], [CreatedOn], {fieldNames}) VALUES (@NewEntityId, @NewEntityCreatedAt, {fieldValueBindings})");
                 connection.Execute(sqlQuery, arguments);
             }
 
