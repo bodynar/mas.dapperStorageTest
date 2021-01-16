@@ -29,6 +29,7 @@
             => nameof(DataController);
 
         [HttpPost("[action]")]
+        [HttpPut("[action]")]
         public InsertResponse Insert([FromBody] InsertRequest insertRequest)
         {
             EnsureNotNull(insertRequest, nameof(insertRequest));
@@ -56,6 +57,7 @@
         }
 
         [HttpPost("[action]")]
+        [HttpDelete("[action]")]
         public DeleteResponse Delete([FromBody] DeleteRequest deleteRequest)
         {
             EnsureNotNull(deleteRequest, nameof(deleteRequest));
