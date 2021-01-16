@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class SelectQueryResponse
     {
@@ -31,6 +32,7 @@
             Offset = offset;
             Columns = columns ?? throw new ArgumentNullException(nameof(columns));
             OrderingColumns = orderingColumns ?? throw new ArgumentNullException(nameof(orderingColumns));
+            Warnings = warnings ?? Enumerable.Empty<string>();
         }
     }
 }
