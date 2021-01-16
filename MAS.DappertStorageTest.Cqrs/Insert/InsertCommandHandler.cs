@@ -20,6 +20,7 @@
         public override void Handle(InsertCommand command)
         {
             EnsureEntityNameIsValid(command.EntityName);
+            EnsureFieldsAreValidForEntity(command.EntityName, command.PropertyValues.Select(x => x.Key));
 
             var fields = command.PropertyValues.Where(pair => !DefaultEntityFields.Contains(pair.Key));
             var fieldNames = string.Join(", ", fields.Select(pair => $"[{pair.Key}]"));
