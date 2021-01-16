@@ -21,6 +21,8 @@
                 .UseHttpsRedirection()
                 .UseSimpleInjector(container, options => { })
                 .UseRouting()
+                .UseSwagger()
+                .UseSwaggerUI(setup => setup.SwaggerEndpoint("/swagger/v1/swagger.json", "Data service v1"))
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllerRoute(
