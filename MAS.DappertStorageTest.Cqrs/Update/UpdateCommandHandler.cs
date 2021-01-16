@@ -37,13 +37,19 @@
 
             var setStatement =
                 string.Join(", ",
-                    fields.Select(field => {
+                    fields.Select(field =>
+                    {
                         var argumentKey = $"UpdateEntity{field.Key}";
                         arguments.TryAdd(argumentKey, field.Value);
 
                         return $"[{field.Key}] = @{argumentKey}";
                     })
                 );
+
+            var updateDate = DateTime.UtcNow;
+
+            arguments.TryAdd("UpdateEntityModifiedOn", updateDate);
+            setStatement += $", [ModifiedOn] = @UpdateEntityModifiedOn";
 
             var sqlQuery = BuildQuery($"UPDATE [{command.EntityName}] SET {setStatement} WHERE {whereSqlStatement}");
             var result = 0;
