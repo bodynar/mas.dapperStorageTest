@@ -55,6 +55,20 @@
             return new SelectResponse(result.Entities, result.EntityName, result.Count, result.Offset, result.Columns, result.Warnings);
         }
 
+        [HttpPost("[action]")]
+        public DeleteResponse Delete([FromBody] DeleteRequest deleteRequest)
+        {
+            EnsureNotNull(deleteRequest, nameof(deleteRequest));
+
+            var command =
+                deleteRequest.EntityId.HasValue
+                ? new DeleteCommand(deleteRequest.EntityName, deleteRequest.EntityId.Value)
+                : new DeleteCommand(deleteRequest.EntityName, deleteRequest.Filters);
+            CommandProcessor.Execute(command);
+
+            return new DeleteResponse(command.RowsAffected);
+        }
+
         private static void EnsureNotNull<TValue>(TValue value, string paramName)
             where TValue : class
         {
