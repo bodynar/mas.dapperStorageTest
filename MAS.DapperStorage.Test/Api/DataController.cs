@@ -69,6 +69,18 @@
             return new DeleteResponse(command.RowsAffected);
         }
 
+        [HttpPost("[action]")]
+        [HttpPatch("[action]")]
+        public UpdateResponse Update([FromBody] UpdateRequest updateRequest)
+        {
+            EnsureNotNull(updateRequest, nameof(updateRequest));
+
+            var command = new UpdateCommand(updateRequest.EntityName, updateRequest.Values, updateRequest.Filters);
+            CommandProcessor.Execute(command);
+
+            return new UpdateResponse(command.RowsAffected, command.Warnings);
+        }
+
         private static void EnsureNotNull<TValue>(TValue value, string paramName)
             where TValue : class
         {
