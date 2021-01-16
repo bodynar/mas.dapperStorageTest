@@ -2,9 +2,7 @@
 {
     using System;
 
-    using MAS.DapperStorageTest.Infrastructure.Cqrs;
-
-    public class DeleteCommand: ICommand
+    public class DeleteCommand: BaseCommand
     {
         public Guid? EntityId { get; }
 

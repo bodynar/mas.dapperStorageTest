@@ -3,9 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using MAS.DapperStorageTest.Infrastructure.Cqrs;
-
-    public class InsertCommand : ICommand
+    public class InsertCommand : BaseCommand
     {
         public string EntityName { get; }
 
@@ -14,6 +12,7 @@
         public Guid EntityId { get; set; }
 
         public InsertCommand(string entityName, IDictionary<string, string> propertyValues)
+            : base()
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             PropertyValues = propertyValues ?? throw new ArgumentNullException(nameof(propertyValues));

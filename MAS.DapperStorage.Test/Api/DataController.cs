@@ -36,7 +36,7 @@
             var command = new InsertCommand(insertRequest.EntityName, insertRequest.Values);
             CommandProcessor.Execute(command);
 
-            return new InsertResponse(command.EntityId);
+            return new InsertResponse(command.EntityId, command.Warnings);
         }
 
         [HttpGet("[action]")]
