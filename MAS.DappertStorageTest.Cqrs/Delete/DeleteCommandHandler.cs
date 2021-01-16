@@ -24,6 +24,8 @@
             command.RowsAffected = rowsAffected;
         }
 
+        #region Not public API
+
         private int DeleteById(DeleteCommand command)
         {
             var sqlQuery = BuildQuery($"DELETE FROM [{command.EntityName}] WHERE Id = @Id");
@@ -31,7 +33,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                connection.Execute(sqlQuery, new { Id = command.EntityId });
+                result = connection.Execute(sqlQuery, new { Id = command.EntityId });
             }
 
             return result;
@@ -45,10 +47,12 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                connection.Execute(sqlQuery, arguments);
+                result = connection.Execute(sqlQuery, arguments);
             }
 
             return result;
         }
+
+        #endregion
     }
 }
