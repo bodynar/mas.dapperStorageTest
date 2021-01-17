@@ -5,15 +5,13 @@
     using System.Dynamic;
     using System.Linq;
 
-    using Dapper;
-
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class InsertCommandHandler : BaseCommandHandler<InsertCommand>
     {
-        public InsertCommandHandler(IDbConnectionFactory dbConnectionFactory)
-            : base(dbConnectionFactory)
+        public InsertCommandHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter)
+            : base(dbConnectionFactory, dbAdapter)
         {
         }
 
@@ -48,7 +46,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                connection.Execute(sqlQuery, arguments);
+                DbAdapter.Execute(connection, sqlQuery, arguments);
             }
 
             command.EntityId = entityId;

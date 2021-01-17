@@ -4,15 +4,13 @@
     using System.Linq;
     using System.Text;
 
-    using Dapper;
-
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class SelectQueryHandler : BaseQueryHandler<SelectQuery, SelectQueryResponse>
     {
-        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
-            : base(dbConnectionFactory, filterBuilder)
+        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, dbAdapter, filterBuilder)
         {
         }
 
@@ -61,11 +59,11 @@
 
             var sqlQuery = BuildQuery(sqlQueryBuilder.ToString());
 
-            IEnumerable<dynamic> result;
+            IEnumerable<IDictionary<string, object>> result;
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Query(sqlQuery, arguments);
+                result = DbAdapter.Query(connection, sqlQuery, arguments);
             }
 
             return result.Select(entity => entity as IDictionary<string, object>);

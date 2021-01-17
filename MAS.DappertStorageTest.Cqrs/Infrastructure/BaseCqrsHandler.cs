@@ -16,6 +16,8 @@
 
         protected IDbConnectionFactory DbConnectionFactory { get; }
 
+        protected IDbAdapter DbAdapter { get; }
+
         protected IFilterBuilder FilterBuilder { get; }
 
         static BaseCqrsHandler()
@@ -23,13 +25,14 @@
             InitDatabaseModelsStaticData();
         }
 
-        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory)
+        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter)
         {
             DbConnectionFactory = dbConnectionFactory ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
+            DbAdapter = dbAdapter ?? throw new ArgumentNullException(nameof(dbAdapter));
         }
 
-        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
-            : this(dbConnectionFactory)
+        public BaseCqrsHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter, IFilterBuilder filterBuilder)
+            : this(dbConnectionFactory, dbAdapter)
         {
             FilterBuilder = filterBuilder ?? throw new ArgumentNullException(nameof(filterBuilder));
         }

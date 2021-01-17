@@ -4,15 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Dapper;
-
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class UpdateCommandHandler : BaseCommandHandler<UpdateCommand>
     {
-        public UpdateCommandHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
-            : base(dbConnectionFactory, filterBuilder)
+        public UpdateCommandHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, dbAdapter, filterBuilder)
         {
         }
 
@@ -56,7 +54,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Execute(sqlQuery, arguments);
+                result = DbAdapter.Execute(connection, sqlQuery, arguments);
             }
 
             command.RowsAffected = result;

@@ -1,14 +1,12 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
-    using Dapper;
-
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class DeleteCommandHandler : BaseCommandHandler<DeleteCommand>
     {
-        public DeleteCommandHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
-            : base(dbConnectionFactory, filterBuilder)
+        public DeleteCommandHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, dbAdapter, filterBuilder)
         {
         }
 
@@ -33,7 +31,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Execute(sqlQuery, new { Id = command.EntityId });
+                result = DbAdapter.Execute(connection, sqlQuery, new { Id = command.EntityId });
             }
 
             return result;
@@ -47,7 +45,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Execute(sqlQuery, arguments);
+                result = DbAdapter.Execute(connection, sqlQuery, arguments);
             }
 
             return result;
