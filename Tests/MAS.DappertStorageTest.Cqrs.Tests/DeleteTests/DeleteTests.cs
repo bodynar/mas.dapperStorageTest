@@ -29,7 +29,7 @@
         }
 
         [Fact]
-        public void ShouldBuildSqlQueryFromIdParameter()
+        public void ShouldBuildSqlCommandFromIdParameter()
         {
             var testedGuid = Guid.NewGuid();
             var expectedSql = "DELETE FROM [Passenger] WHERE Id = @Id";
@@ -44,6 +44,39 @@
             AssertSqlQuery(expectedSql, lastCommand.Key);
             Assert.NotNull(lastCommand.Value);
             AssertArguments(lastCommand.Value, expectedArguments);
+        }
+
+        [Fact]
+        public void ShouldThrowArgumentExceptionWhenFilterGroupIsEmpty()
+        {
+            var entityName = nameof(Passenger);
+            var expectedExceptionMessage = "Filter doesn't contains any expression.";
+            var command = new DeleteCommand(entityName, EmptyFilterGroup);
+            var handler = new DeleteCommandHandler(DbConnectionFactory, DbAdapter, FilterBuilder);
+
+            Exception exception =
+                Record.Exception(
+                    () => handler.Handle(command)
+                );
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
+            Assert.Equal(expectedExceptionMessage, exception.Message);
+        }
+
+        [Fact]
+        public void ShouldBuildSqlCommandFromFilterParameter()
+        {
+            FilterBuilderSqlResult = "Test";
+            var expectedSql = "DELETE FROM [Passenger] WHERE Test";
+            var entityName = nameof(Passenger);
+            var command = new DeleteCommand(entityName, EmptyFilterGroup);
+            var handler = new DeleteCommandHandler(DbConnectionFactory, DbAdapter, FilterBuilder);
+
+            handler.Handle(command);
+            var lastCommand = GetLastCommand();
+
+            AssertSqlQuery(expectedSql, lastCommand.Key);
         }
     }
 }
