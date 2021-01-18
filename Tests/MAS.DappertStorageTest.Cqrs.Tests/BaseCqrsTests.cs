@@ -20,6 +20,11 @@
 
         protected IDbAdapter DbAdapter { get; private set; }
 
+        protected QueryFilterGroup EmptyFilterGroup { get; } =
+            new QueryFilterGroup("Test", "Test", FilterJoinType.None, Enumerable.Empty<QueryFilterItem>());
+
+        protected string FilterBuilderSqlResult { get; set; }
+
         private KeyValuePair<string, dynamic>? LastQuery { get; set; }
 
         private KeyValuePair<string, dynamic>? LastCommand { get; set; }
@@ -118,7 +123,7 @@
 
             mockFilterBuilder
                 .Setup(x => x.Build(It.IsAny<QueryFilterGroup>()))
-                .Returns(() => (string.Empty, new System.Dynamic.ExpandoObject()));
+                .Returns(() => (FilterBuilderSqlResult, new System.Dynamic.ExpandoObject()));
 
             mockDbAdapter
                 .Setup(x => x.Query(It.IsAny<IDbConnection>(), It.IsAny<string>(), It.IsAny<object>()))
