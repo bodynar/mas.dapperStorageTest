@@ -8,7 +8,7 @@
 
     using Xunit;
 
-    public sealed class DeleteTests : BaseCqrsTests
+    public sealed class DeleteCommandHandlerTests : BaseCqrsTests
     {
         [Fact]
         public void ShouldThrowDatabaseOperationExceptionWhenEntityNameIsNotValid()
@@ -70,7 +70,7 @@
             FilterBuilderSqlResult = "Test";
             var expectedSql = "DELETE FROM [Passenger] WHERE Test";
             var entityName = nameof(Passenger);
-            var command = new DeleteCommand(entityName, EmptyFilterGroup);
+            var command = new DeleteCommand(entityName, TestedFilterGroup);
             var handler = new DeleteCommandHandler(DbConnectionFactory, DbAdapter, FilterBuilder);
 
             handler.Handle(command);
