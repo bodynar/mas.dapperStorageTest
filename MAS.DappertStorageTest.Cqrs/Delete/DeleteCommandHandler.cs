@@ -43,11 +43,6 @@
         {
             var (whereCondition, arguments) = BuildWhereFilter(command.EntityName, command.FilterGroup);
 
-            if (string.IsNullOrEmpty(whereCondition))
-            {
-                throw new ArgumentException("Filter doesn't contains any expression.");
-            }
-
             var sqlQuery = BuildQuery($"DELETE FROM [{command.EntityName}] WHERE {whereCondition}");
             var result = 0;
 

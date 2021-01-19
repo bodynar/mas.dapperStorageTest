@@ -82,6 +82,11 @@
         {
             var filterFieldNames = GetFilterFiledNames(filter);
 
+            if (!filterFieldNames.Any())
+            {
+                throw new ArgumentException("Filter doesn't contains any expression.");
+            }
+
             EnsureFieldsAreValidForEntity(entityName, filterFieldNames);
 
             return FilterBuilder.Build(filter);
