@@ -7,6 +7,7 @@
 
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Tests;
+    using MAS.DapperStorageTest.Models;
 
     using Moq;
 
@@ -14,21 +15,55 @@
 
     public class BaseCqrsTests : BaseTests
     {
+        /// <summary>
+        /// Mock of DbConnectionFactory
+        /// </summary>
         protected IDbConnectionFactory DbConnectionFactory { get; private set; }
 
+        /// <summary>
+        /// Mock of FilterBuilder
+        /// </summary>
         protected IFilterBuilder FilterBuilder { get; private set; }
 
+        /// <summary>
+        /// Mock of DbAdapter
+        /// </summary>
         protected IDbAdapter DbAdapter { get; private set; }
 
+        /// <summary>
+        /// Empty QueryFilterGroup without fields and groups
+        /// </summary>
         protected QueryFilterGroup EmptyFilterGroup { get; } =
             new QueryFilterGroup("Test", "Test", FilterJoinType.None, Enumerable.Empty<QueryFilterItem>());
 
+        /// <summary>
+        /// QueryFilterItem instance for testing
+        /// </summary>
+        protected QueryFilterItem TestedQueryFilterItem { get; } =
+            new QueryFilterItem("Test", nameof(Passenger.Id), string.Empty, ComparisonType.None);
+
+        /// <summary>
+        /// QueryFilterGroup instance for testing, contains <see cref="TestedQueryFilterItem"/>
+        /// </summary>
+        protected QueryFilterGroup TestedFilterGroup { get; private set; }
+
+        /// <summary>
+        /// Strict filter builder first argument result
+        /// </summary>
         protected string FilterBuilderSqlResult { get; set; }
+
+        /// <summary>
+        /// Static result of executing command Execute of mock DbAdapter
+        /// </summary>
+        protected int DbAdapterExecuteResult { get; } = 100;
 
         private KeyValuePair<string, dynamic>? LastQuery { get; set; }
 
         private KeyValuePair<string, dynamic>? LastCommand { get; set; }
 
+        /// <summary>
+        /// Base cqrs tests configuration
+        /// </summary>
         public BaseCqrsTests()
         {
             Init();
@@ -150,12 +185,13 @@
 
                     LastCommand = new KeyValuePair<string, dynamic>(sqlQuery, arguments);
 
-                    return default;
+                    return DbAdapterExecuteResult;
                 });
 
             DbConnectionFactory = mockDbConnectionFactory.Object;
             FilterBuilder = mockFilterBuilder.Object;
             DbAdapter = mockDbAdapter.Object;
+            TestedFilterGroup = new QueryFilterGroup(nameof(Passenger), "Test", FilterJoinType.None, new QueryFilterItem[] { TestedQueryFilterItem });
         }
     }
 }
