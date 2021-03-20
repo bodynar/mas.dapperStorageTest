@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Dynamic;
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
@@ -57,9 +58,17 @@
         /// </summary>
         protected int DbAdapterExecuteResult { get; } = 100;
 
+        #region Private members
+
+        private IEnumerable<string> ParamNamesToExcludeFromCheck
+            => new[] { "NewEntityId", "NewEntityCreatedAt", "UpdateEntityModifiedOn" };
+
         private KeyValuePair<string, dynamic>? LastQuery { get; set; }
 
         private KeyValuePair<string, dynamic>? LastCommand { get; set; }
+
+        #endregion
+
 
         /// <summary>
         /// Base cqrs tests configuration
@@ -120,23 +129,47 @@
         /// Assert sql configuration arguments.
         /// Asserts equality of argument keys and values sequently
         /// </summary>
-        /// <param name="arguments">Actual arguments</param>
-        /// <param name="valuePairs">Expected arguments</param>
-        protected void AssertArguments(object arguments, IEnumerable<KeyValuePair<string, object>> valuePairs)
+        /// <param name="expected">Expected arguments</param>
+        /// <param name="actual">Actual arguments</param>
+        protected void AssertArguments(IEnumerable<KeyValuePair<string, object>> expected, object actual)
         {
-            var objectKeys = arguments.GetType().GetProperties();
-            var objectKeyNames = objectKeys.Select(x => x.Name.ToLower());
+            if (actual is ExpandoObject)
+            {
+                AssertArguments(expected, actual as ExpandoObject);
+            }
+            else
+            {
+                var objectKeys = actual.GetType().GetProperties();
+                var objectKeyNames = objectKeys.Select(x => x.Name).Except(ParamNamesToExcludeFromCheck);
 
-            var hasNotPresentedKeys = valuePairs.Any(pair => !objectKeyNames.Contains(pair.Key.ToLower()));
+                var hasNotPresentedKeys = expected.Any(pair => !objectKeyNames.Contains(pair.Key));
 
+                Assert.False(hasNotPresentedKeys);
+
+                foreach (var key in objectKeys)
+                {
+                    var actualValue = key.GetValue(actual);
+                    var expectedValue = expected.First(x => x.Key == key.Name).Value;
+
+                    Assert.Equal(expectedValue, actualValue);
+                }
+            }
+        }
+        
+        private void AssertArguments(IEnumerable<KeyValuePair<string, object>> expected, ExpandoObject actual)
+        {
+            var actualArguments = actual.Where(x => !ParamNamesToExcludeFromCheck.Contains(x.Key));
+            var objectKeyNames = actualArguments.Select(x => x.Key);
+
+            var hasNotPresentedKeys = expected.Any(pair => !objectKeyNames.Contains(pair.Key));
+            
             Assert.False(hasNotPresentedKeys);
 
-            foreach (var key in objectKeys)
+            foreach (var pair in actualArguments)
             {
-                var actualValue = key.GetValue(arguments);
-                var expectedValue = valuePairs.First(x => x.Key == key.Name).Value;
+                var expectedValue = expected.First(x => x.Key == pair.Key).Value;
 
-                Assert.Equal(expectedValue, actualValue);
+                Assert.Equal(expectedValue, pair.Value);
             }
         }
 
