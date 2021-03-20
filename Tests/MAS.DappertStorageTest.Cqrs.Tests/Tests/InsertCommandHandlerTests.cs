@@ -9,42 +9,27 @@
 
     using Xunit;
 
-    public sealed class InsertCommandHandlerTests : BaseCqrsTests
+    public sealed class InsertCommandHandlerTests : CommonCqrsTests
     {
         [Fact]
         public void ShouldThrowDatabaseOperationExceptionWhenEntityNameIsNotValid()
         {
             var entityName = "TEST";
-            var expectedExceptionMessage = "Entity name \"TEST\" is not valid or isn't presented in database.";
             var command = new InsertCommand(entityName, new Dictionary<string, object>());
             var handler = new InsertCommandHandler(DbConnectionFactory, DbAdapter);
 
-            Exception exception =
-                Record.Exception(
-                    () => handler.Handle(command)
-                );
-
-            Assert.NotNull(exception);
-            Assert.IsType<DatabaseOperationException>(exception);
-            Assert.Equal(expectedExceptionMessage, exception.Message);
+            ShouldThrowDatabaseOperationExceptionWhenEntityNameIsNotValidInternal(entityName, command, handler);
         }
 
         [Fact]
         public void ShouldThrowDatabaseOperationExceptionWhenEntityFieldsAreNotValid()
         {
             var entityName = nameof(Passenger);
-            var expectedExceptionMessage = "Entity name \"Passenger\" does not contains these fields: [Test, TestField].";
-            var command = new InsertCommand(entityName, new Dictionary<string, object>() { { "Test", "" }, { "TestField", "" } });
+            var propertyValues = new Dictionary<string, object>() { { "Test", "" }, { "TestField", "" } };
+            var command = new InsertCommand(entityName, propertyValues);
             var handler = new InsertCommandHandler(DbConnectionFactory, DbAdapter);
 
-            Exception exception =
-                Record.Exception(
-                    () => handler.Handle(command)
-                );
-
-            Assert.NotNull(exception);
-            Assert.IsType<DatabaseOperationException>(exception);
-            Assert.Equal(expectedExceptionMessage, exception.Message);
+            ShouldThrowDatabaseOperationExceptionWhenEntityFieldsAreNotValidInternal(entityName, propertyValues.Keys, command, handler);
         }
 
         [Fact]

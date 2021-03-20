@@ -69,7 +69,6 @@
 
         #endregion
 
-
         /// <summary>
         /// Base cqrs tests configuration
         /// </summary>
@@ -155,7 +154,9 @@
                 }
             }
         }
-        
+
+        #region Private methods
+
         private void AssertArguments(IEnumerable<KeyValuePair<string, object>> expected, ExpandoObject actual)
         {
             var actualArguments = actual.Where(x => !ParamNamesToExcludeFromCheck.Contains(x.Key));
@@ -226,5 +227,7 @@
             DbAdapter = mockDbAdapter.Object;
             TestedFilterGroup = new QueryFilterGroup(nameof(Passenger), "Test", FilterJoinType.None, new QueryFilterItem[] { TestedQueryFilterItem });
         }
+
+        #endregion
     }
 }
