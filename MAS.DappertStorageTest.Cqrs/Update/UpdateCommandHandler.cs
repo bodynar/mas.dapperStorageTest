@@ -28,9 +28,6 @@
                 command.Warnings.Add($"Cannot set value for default columns: [{string.Join(", ", notValidKeys)}]");
             }
 
-            var fieldNames = string.Join(", ", fields.Select(pair => $"[{pair.Key}]"));
-            var fieldValueBindings = string.Join(", ", fields.Select(pair => $"@NewEntity{pair.Key}"));
-
             var (whereSqlStatement, arguments) = FilterBuilder.Build(command.FilterGroup);
 
             var setStatement =

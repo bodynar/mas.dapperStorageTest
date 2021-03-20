@@ -8,7 +8,6 @@
 
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Tests;
-    using MAS.DapperStorageTest.Models;
 
     using Moq;
 
@@ -38,20 +37,12 @@
             new QueryFilterGroup("Test", "Test", FilterJoinType.None, Enumerable.Empty<QueryFilterItem>());
 
         /// <summary>
-        /// QueryFilterItem instance for testing
-        /// </summary>
-        protected QueryFilterItem TestedQueryFilterItem { get; } =
-            new QueryFilterItem("Test", nameof(Passenger.Id), string.Empty, ComparisonType.None);
-
-        /// <summary>
-        /// QueryFilterGroup instance for testing, contains <see cref="TestedQueryFilterItem"/>
-        /// </summary>
-        protected QueryFilterGroup TestedFilterGroup { get; private set; }
-
-        /// <summary>
         /// Strict filter builder first argument result
         /// </summary>
         protected string FilterBuilderSqlResult { get; set; }
+
+        /// <summary>
+        /// </summary>
 
         /// <summary>
         /// Static result of executing command Execute of mock DbAdapter
@@ -163,7 +154,7 @@
             var objectKeyNames = actualArguments.Select(x => x.Key);
 
             var hasNotPresentedKeys = expected.Any(pair => !objectKeyNames.Contains(pair.Key));
-            
+
             Assert.False(hasNotPresentedKeys);
 
             foreach (var pair in actualArguments)
@@ -225,7 +216,6 @@
             DbConnectionFactory = mockDbConnectionFactory.Object;
             FilterBuilder = mockFilterBuilder.Object;
             DbAdapter = mockDbAdapter.Object;
-            TestedFilterGroup = new QueryFilterGroup(nameof(Passenger), "Test", FilterJoinType.None, new QueryFilterItem[] { TestedQueryFilterItem });
         }
 
         #endregion

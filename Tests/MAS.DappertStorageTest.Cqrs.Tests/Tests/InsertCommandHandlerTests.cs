@@ -1,10 +1,8 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Models;
 
     using Xunit;
