@@ -42,7 +42,9 @@
         protected string FilterBuilderSqlResult { get; set; }
 
         /// <summary>
+        /// Strict filter builder second argument result
         /// </summary>
+        protected IDictionary<string, object> FilterBuilderArgumentsResult { get; set; }
 
         /// <summary>
         /// Static result of executing command Execute of mock DbAdapter
@@ -183,7 +185,20 @@
 
             mockFilterBuilder
                 .Setup(x => x.Build(It.IsAny<QueryFilterGroup>()))
-                .Returns(() => (FilterBuilderSqlResult, new System.Dynamic.ExpandoObject()));
+                .Returns(() =>
+                {
+                    var expandoObject = new ExpandoObject();
+
+                    if (FilterBuilderArgumentsResult != null)
+                    {
+                        foreach (var pair in FilterBuilderArgumentsResult)
+                        {
+                            var result = expandoObject.TryAdd(pair.Key, pair.Value);
+                        }
+                    }
+
+                    return (FilterBuilderSqlResult, expandoObject);
+                });
 
             mockDbAdapter
                 .Setup(x => x.Query(It.IsAny<IDbConnection>(), It.IsAny<string>(), It.IsAny<object>()))
