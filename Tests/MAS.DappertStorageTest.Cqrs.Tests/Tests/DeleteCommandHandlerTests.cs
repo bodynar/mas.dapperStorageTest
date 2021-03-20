@@ -43,7 +43,7 @@
 
             AssertSqlQuery(expectedSql, lastCommand.Key);
             Assert.NotNull(lastCommand.Value);
-            AssertArguments(lastCommand.Value, expectedArguments);
+            AssertArguments(expectedArguments, lastCommand.Value);
         }
 
         [Fact]
