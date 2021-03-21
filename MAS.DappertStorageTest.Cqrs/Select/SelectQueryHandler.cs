@@ -53,18 +53,24 @@
                 }
             }
 
-            var pageSqlPart = GetPageSqlPart(query, warnings);
-
             if (!string.IsNullOrEmpty(whereCondition))
             {
                 sqlQueryBuilder.Append($" WHERE {whereCondition}");
             }
 
-            sqlQueryBuilder.Append(pageSqlPart);
+            var pageSqlPart = GetPageSqlPart(query, warnings);
+
+            if (!string.IsNullOrEmpty(pageSqlPart))
+            {
+                sqlQueryBuilder.Append(pageSqlPart);
+            }
 
             var orderBySqlPart = GetOrderingSqlPart(query, warnings);
 
-            sqlQueryBuilder.Append(orderBySqlPart);
+            if (!string.IsNullOrEmpty(orderBySqlPart))
+            {
+                sqlQueryBuilder.Append(orderBySqlPart);
+            }
 
             var sqlQuery = BuildQuery(sqlQueryBuilder.ToString());
 
