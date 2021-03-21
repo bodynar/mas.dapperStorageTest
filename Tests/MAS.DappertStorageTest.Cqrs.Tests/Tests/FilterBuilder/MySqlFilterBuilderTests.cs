@@ -1,4 +1,4 @@
-﻿namespace MAS.DappertStorageTest.Cqrs.Tests
+﻿namespace MAS.DappertStorageTest.Cqrs.Tests.FilterBuilder
 {
     using System;
     using System.Linq;
