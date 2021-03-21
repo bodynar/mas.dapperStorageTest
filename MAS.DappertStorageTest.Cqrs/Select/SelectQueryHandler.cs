@@ -45,12 +45,21 @@
 
             if (query.FilterGroup != null)
             {
-                (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
+                var (builtFilterWhereStatement, builtFilterArguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
+
+                if (!string.IsNullOrEmpty(builtFilterWhereStatement) && builtFilterArguments != null && builtFilterArguments.Any())
+                {
+                    (whereCondition, arguments) = (builtFilterWhereStatement, builtFilterArguments);
+                }
             }
 
             var pageSqlPart = GetPageSqlPart(query, warnings);
 
-            sqlQueryBuilder.Append(string.IsNullOrEmpty(whereCondition) ? string.Empty : $" WHERE {whereCondition}");
+            if (!string.IsNullOrEmpty(whereCondition))
+            {
+                sqlQueryBuilder.Append($" WHERE {whereCondition}");
+            }
+
             sqlQueryBuilder.Append(pageSqlPart);
 
             var orderBySqlPart = GetOrderingSqlPart(query, warnings);
@@ -66,7 +75,7 @@
                 result = DbAdapter.Query(connection, sqlQuery, arguments);
             }
 
-            return result.Select(entity => entity as IDictionary<string, object>);
+            return result;
         }
 
         private string GetPageSqlPart(SelectQuery query, ICollection<string> warnings)
