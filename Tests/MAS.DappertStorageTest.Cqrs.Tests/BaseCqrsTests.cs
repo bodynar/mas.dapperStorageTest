@@ -31,6 +31,11 @@
         protected IDbAdapter DbAdapter { get; private set; }
 
         /// <summary>
+        /// Tested query options
+        /// </summary>
+        protected DbConnectionQueryOptions MockQueryOptions { get; private set; } = new DbConnectionQueryOptions() { MaxRowCount = 100 };
+
+        /// <summary>
         /// Empty QueryFilterGroup without fields and groups
         /// </summary>
         protected QueryFilterGroup EmptyFilterGroup { get; } =
@@ -71,17 +76,6 @@
         }
 
         /// <summary>
-        /// Assert sql query equality
-        /// </summary>
-        /// <param name="expectedSqlQuery">Expected sql statements</param>
-        /// <param name="actualSqlQuery">Actual sql statements</param>
-        protected void AssertSqlQuery(string expectedSqlQuery, string actualSqlQuery)
-        {
-            expectedSqlQuery = $"USE [{DbConnectionFactory.DatabaseName}];{Environment.NewLine}{expectedSqlQuery}";
-            Assert.Equal(expectedSqlQuery, actualSqlQuery);
-        }
-
-        /// <summary>
         /// Get configuration of last query
         /// </summary>
         /// <exception cref="Exception">No last query configuration data found.</exception>
@@ -115,6 +109,17 @@
             LastCommand = null;
 
             return copy;
+        }
+
+        /// <summary>
+        /// Assert sql query equality
+        /// </summary>
+        /// <param name="expectedSqlQuery">Expected sql statements</param>
+        /// <param name="actualSqlQuery">Actual sql statements</param>
+        protected void AssertSqlQuery(string expectedSqlQuery, string actualSqlQuery)
+        {
+            expectedSqlQuery = $"USE [{DbConnectionFactory.DatabaseName}];{Environment.NewLine}{expectedSqlQuery}";
+            Assert.Equal(expectedSqlQuery, actualSqlQuery);
         }
 
         /// <summary>
@@ -182,6 +187,10 @@
             mockDbConnectionFactory
                 .SetupGet(x => x.DatabaseName)
                 .Returns("Test");
+
+            mockDbConnectionFactory
+                .SetupGet(x => x.QueryOptions)
+                .Returns(MockQueryOptions);
 
             mockFilterBuilder
                 .Setup(x => x.Build(It.IsAny<QueryFilterGroup>()))
