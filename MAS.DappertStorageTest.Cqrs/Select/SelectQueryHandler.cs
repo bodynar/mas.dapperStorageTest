@@ -2,17 +2,14 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-
-    using Dapper;
 
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class SelectQueryHandler : BaseQueryHandler<SelectQuery, SelectQueryResponse>
     {
-        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
-            : base(dbConnectionFactory, filterBuilder)
+        public SelectQueryHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, dbAdapter, filterBuilder)
         {
         }
 
@@ -40,38 +37,63 @@
         private IEnumerable<IDictionary<string, object>> GetByFilters(SelectQuery query, IEnumerable<string> columns, ICollection<string> warnings)
         {
             var queryColumns = !columns.Any() ? "*" : string.Join(", ", columns.Select(columnName => $"[{columnName}]"));
-            var sqlQueryBuilder = new StringBuilder($"SELECT {queryColumns} FROM [{query.EntityName}]");
+            var sqlQueryParts = new List<string>() { $"SELECT {queryColumns} FROM [{query.EntityName}]" };
 
             var whereCondition = string.Empty;
             object arguments = new { };
 
             if (query.FilterGroup != null)
             {
-                (whereCondition, arguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
+                var (builtFilterWhereStatement, builtFilterArguments) = BuildWhereFilter(query.EntityName, query.FilterGroup);
+
+                if (!string.IsNullOrEmpty(builtFilterWhereStatement) && builtFilterArguments != null)
+                {
+                    (whereCondition, arguments) = (builtFilterWhereStatement, builtFilterArguments);
+                }
             }
 
-            var pageSqlPart = GetPageSqlPart(query, warnings);
+            if (!string.IsNullOrEmpty(whereCondition))
+            {
+                sqlQueryParts.Add($"WHERE {whereCondition}");
+            }
 
-            sqlQueryBuilder.Append(string.IsNullOrEmpty(whereCondition) ? string.Empty : $" WHERE {whereCondition}");
-            sqlQueryBuilder.Append(pageSqlPart);
+            var orderByAndPagingSqlPart = GetOrderAndPagingSqlPart(query, warnings);
 
-            var orderBySqlPart = GetOrderingSqlPart(query, warnings);
+            if (!string.IsNullOrEmpty(orderByAndPagingSqlPart))
+            {
+                sqlQueryParts.Add(orderByAndPagingSqlPart);
+            }
 
-            sqlQueryBuilder.Append(orderBySqlPart);
+            var sqlQueryPartsInRow = string.Join(" ", sqlQueryParts);
+            var sqlQuery = BuildQuery(sqlQueryPartsInRow);
 
-            var sqlQuery = BuildQuery(sqlQueryBuilder.ToString());
-
-            IEnumerable<dynamic> result;
+            IEnumerable<IDictionary<string, object>> result;
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Query(sqlQuery, arguments);
+                result = DbAdapter.Query(connection, sqlQuery, arguments);
             }
 
-            return result.Select(entity => entity as IDictionary<string, object>);
+            return result;
         }
 
-        private string GetPageSqlPart(SelectQuery query, ICollection<string> warnings)
+        private string GetOrderAndPagingSqlPart(SelectQuery query, ICollection<string> warnings)
+        {
+            var orderBySqlPart = GetOrderingSqlPart(query, warnings);
+
+            var pageSqlPart = GetPageSqlPart(query, warnings, orderBySqlPart);
+
+            if (!string.IsNullOrEmpty(pageSqlPart) && !string.IsNullOrEmpty(orderBySqlPart))
+            {
+                return $"{orderBySqlPart}, {pageSqlPart}";
+            }
+
+            return !string.IsNullOrEmpty(orderBySqlPart)
+                ? orderBySqlPart
+                : pageSqlPart;
+        }
+
+        private string GetPageSqlPart(SelectQuery query, ICollection<string> warnings, string orderByPart)
         {
             if (query.Count > 0 && query.Count > DbConnectionFactory.QueryOptions.MaxRowCount)
             {
@@ -85,9 +107,14 @@
                 query.Offset = 0;
             }
 
-            return query.Count > 0 ?
-                $" ORDER BY [Id] OFFSET {query.Offset} ROWS FETCH NEXT {query.Count} ROWS ONLY"
-                : string.Empty;
+            if (query.Count > 0)
+            {
+                return string.IsNullOrEmpty(orderByPart)
+                    ? $"ORDER BY [Id] ASC OFFSET {query.Offset} ROWS FETCH NEXT {query.Count} ROWS ONLY"
+                    : $"[Id] ASC OFFSET {query.Offset} ROWS FETCH NEXT {query.Count} ROWS ONLY";
+            }
+
+            return string.Empty;
         }
 
         private string GetOrderingSqlPart(SelectQuery query, ICollection<string> warnings)

@@ -7,11 +7,11 @@
     {
         public string EntityName { get; }
 
-        public IDictionary<string, string> PropertyValues { get; }
+        public IDictionary<string, object> PropertyValues { get; }
 
         public Guid EntityId { get; set; }
 
-        public InsertCommand(string entityName, IDictionary<string, string> propertyValues)
+        public InsertCommand(string entityName, IDictionary<string, object> propertyValues)
             : base()
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));

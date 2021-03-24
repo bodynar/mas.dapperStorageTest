@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAS.DapperStorageTest", "MAS.DapperStorage.Test\MAS.DapperStorageTest.csproj", "{57C20562-11CA-48B9-B6D2-3EB43EBD2901}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "4. MAS.DapperStorageTest.Api", "MAS.DapperStorage.Test\4. MAS.DapperStorageTest.Api.csproj", "{57C20562-11CA-48B9-B6D2-3EB43EBD2901}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "1. MAS.DapperStorageTest.Models", "MAS.DapperStorage.Test.Models\1. MAS.DapperStorageTest.Models.csproj", "{7CFE43EF-A100-4649-BC66-F89884A42B5B}"
 EndProject

@@ -19,6 +19,6 @@
         /// <para>Field name - field value pairs</para>
         /// </summary>
         [Required]
-        public IDictionary<string, string> Values { get; set; }
+        public IDictionary<string, object> Values { get; set; }
     }
 }

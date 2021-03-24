@@ -7,6 +7,7 @@
     {
         public string EntityName { get; }
 
+        // TODO IDictionary<string, object>
         public IDictionary<string, string> PropertyValues { get; }
 
         public QueryFilterGroup FilterGroup { get; }

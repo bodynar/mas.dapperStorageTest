@@ -24,6 +24,7 @@
 
             // TODO
             container.Register<IResolver, Resolver>(Lifestyle.Singleton);
+            container.Register<IDbAdapter, DapperDbAdapter>(Lifestyle.Singleton);
             container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString, dbName, queryOptions), Lifestyle.Singleton);
             container.Register<IFilterBuilder, MySqlFilterBuilder>();
             container.Register<ILogger, Logger>(Lifestyle.Singleton);

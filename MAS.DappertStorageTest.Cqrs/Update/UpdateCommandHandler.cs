@@ -4,15 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Dapper;
-
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class UpdateCommandHandler : BaseCommandHandler<UpdateCommand>
     {
-        public UpdateCommandHandler(IDbConnectionFactory dbConnectionFactory, IFilterBuilder filterBuilder)
-            : base(dbConnectionFactory, filterBuilder)
+        public UpdateCommandHandler(IDbConnectionFactory dbConnectionFactory, IDbAdapter dbAdapter, IFilterBuilder filterBuilder)
+            : base(dbConnectionFactory, dbAdapter, filterBuilder)
         {
         }
 
@@ -30,10 +28,12 @@
                 command.Warnings.Add($"Cannot set value for default columns: [{string.Join(", ", notValidKeys)}]");
             }
 
-            var fieldNames = string.Join(", ", fields.Select(pair => $"[{pair.Key}]"));
-            var fieldValueBindings = string.Join(", ", fields.Select(pair => $"@NewEntity{pair.Key}"));
-
             var (whereSqlStatement, arguments) = FilterBuilder.Build(command.FilterGroup);
+
+            if (string.IsNullOrEmpty(whereSqlStatement) || arguments == null || !arguments.Any())
+            {
+                throw new FilterException(CommandType, "Filter is not constructed properly.");
+            }
 
             var setStatement =
                 string.Join(", ",
@@ -56,7 +56,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = connection.Execute(sqlQuery, arguments);
+                result = DbAdapter.Execute(connection, sqlQuery, arguments);
             }
 
             command.RowsAffected = result;
