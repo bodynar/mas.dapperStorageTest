@@ -7,6 +7,7 @@
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
     using MAS.DapperStorageTest.Infrastructure.Tests;
 
     using Moq;
@@ -38,8 +39,12 @@
         /// <summary>
         /// Empty QueryFilterGroup without fields and groups
         /// </summary>
-        protected QueryFilterGroup EmptyFilterGroup { get; } =
-            new QueryFilterGroup("Test", "Test", FilterJoinType.None, Enumerable.Empty<QueryFilterItem>());
+        protected FilterGroup EmptyFilterGroup { get; } =
+            new FilterGroup {
+                Name = "Test",
+                LogicalJoinType = FilterJoinType.None,
+                Items = Enumerable.Empty<FilterItem>(),
+            };
 
         /// <summary>
         /// Strict filter builder first argument result
@@ -130,9 +135,9 @@
         /// <param name="actual">Actual arguments</param>
         protected void AssertArguments(IEnumerable<KeyValuePair<string, object>> expected, object actual)
         {
-            if (actual is ExpandoObject)
+            if (actual is IDictionary<string, object>)
             {
-                AssertArguments(expected, actual as ExpandoObject);
+                AssertArguments(expected, actual as IReadOnlyDictionary<string, object>);
             }
             else
             {
@@ -155,7 +160,7 @@
 
         #region Private methods
 
-        private void AssertArguments(IEnumerable<KeyValuePair<string, object>> expected, ExpandoObject actual)
+        private void AssertArguments(IEnumerable<KeyValuePair<string, object>> expected, IReadOnlyDictionary<string, object> actual)
         {
             var actualArguments = actual.Where(x => !ParamNamesToExcludeFromCheck.Contains(x.Key));
             var objectKeyNames = actualArguments.Select(x => x.Key);
@@ -193,10 +198,10 @@
                 .Returns(MockQueryOptions);
 
             mockFilterBuilder
-                .Setup(x => x.Build(It.IsAny<QueryFilterGroup>()))
+                .Setup(x => x.Build(It.IsAny<FilterGroup>()))
                 .Returns(() =>
                 {
-                    var expandoObject = new ExpandoObject();
+                    var expandoObject = new Dictionary<string, object>();
 
                     if (FilterBuilderArgumentsResult != null)
                     {

@@ -18,10 +18,10 @@
         /// <inheritdoc cref="IFilterBuilder.Build(FilterGroup)"/>
         public (string sqlCondition, IReadOnlyDictionary<string, object> sqlArguments) Build(FilterGroup queryFilterGroup)
         {
-            //if (queryFilterGroup == null || queryFilterGroup.IsEmpty)
-            //{
-            //    throw new ArgumentNullException(nameof(queryFilterGroup));
-            //}
+            if (queryFilterGroup == null || queryFilterGroup.IsEmpty)
+            {
+                throw new ArgumentNullException(nameof(queryFilterGroup));
+            }
 
             var arguments = new Dictionary<string, object>();
             var resultSql = BuildWhereFilter(queryFilterGroup, arguments);

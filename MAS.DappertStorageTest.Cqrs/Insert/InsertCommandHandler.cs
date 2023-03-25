@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Dynamic;
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
@@ -33,7 +32,7 @@
             var fieldValueBindings = string.Join(", ", fields.Select(pair => $"@NewEntity{pair.Key}"));
 
             var entityId = Guid.NewGuid();
-            var arguments = new ExpandoObject();
+            var arguments = new Dictionary<string, object>();
             arguments.TryAdd("NewEntityId", entityId);
             arguments.TryAdd("NewEntityCreatedAt", DateTime.UtcNow);
 

@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3. MAS.DappertStorageTest.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2. MAS.DapperStorageTest.Infrastructure.Tests", "Tests\MAS.DapperStorageTest.Infrastructure.Tests\2. MAS.DapperStorageTest.Infrastructure.Tests.csproj", "{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "0.MAS.DapperStorageTest.TestsBase", "Tests\0.MAS.DapperStorageTest.TestsBase\0.MAS.DapperStorageTest.TestsBase.csproj", "{67201C4C-6E8D-4E78-A232-01D4AFC22733}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67201C4C-6E8D-4E78-A232-01D4AFC22733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67201C4C-6E8D-4E78-A232-01D4AFC22733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67201C4C-6E8D-4E78-A232-01D4AFC22733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67201C4C-6E8D-4E78-A232-01D4AFC22733}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{C837083A-9312-42F7-8AE1-854EACE7B348} = {6A7EE1DE-80A4-43E8-BE2E-01778CF34C50}
 		{F3797D24-B18D-48D4-8BEA-35098EF708BE} = {52CB5C46-46A4-4F87-920A-046749E26F1F}
 		{A2DC8B1E-6388-4DE3-841A-835B7C79CA5F} = {52CB5C46-46A4-4F87-920A-046749E26F1F}
+		{67201C4C-6E8D-4E78-A232-01D4AFC22733} = {52CB5C46-46A4-4F87-920A-046749E26F1F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECBC58C1-E090-4C9A-A683-4C4113BA889F}

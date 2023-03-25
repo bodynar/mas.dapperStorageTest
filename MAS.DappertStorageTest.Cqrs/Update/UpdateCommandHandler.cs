@@ -32,11 +32,6 @@
 
             var commandArgs = arguments.ToDictionary(x => x.Key, x => x.Value);
 
-            if (string.IsNullOrEmpty(whereSqlStatement) || arguments == null || !arguments.Any())
-            {
-                throw new FilterException(CommandType, "Filter is not constructed properly.");
-            }
-
             var setStatement =
                 string.Join(", ",
                     fields.Select(field =>
