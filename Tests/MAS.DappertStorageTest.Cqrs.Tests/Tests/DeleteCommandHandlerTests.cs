@@ -59,8 +59,7 @@
         public void ShouldBuildSqlCommandFromFilterParameter()
         {
             FilterBuilderSqlResult = "Test";
-            var testedQueryFilterItem = new QueryFilterItem("Test", nameof(Passenger.Id), string.Empty, ComparisonType.None);
-            var testedFilterGroup = new QueryFilterGroup(nameof(Passenger), "Test", FilterJoinType.None, new QueryFilterItem[] { testedQueryFilterItem });
+            var testedFilterGroup = GetTestFilterGroup();
             var expectedSql = "DELETE FROM [Passenger] WHERE Test";
             var entityName = nameof(Passenger);
             var command = new DeleteCommand(entityName, testedFilterGroup);

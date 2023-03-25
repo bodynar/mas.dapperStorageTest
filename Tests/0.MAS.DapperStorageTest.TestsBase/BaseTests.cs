@@ -1,7 +1,11 @@
 ﻿namespace MAS.DapperStorageTest.Infrastructure.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+
+    using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
 
     using Moq;
 
@@ -10,6 +14,9 @@
         protected ILogger Logger { get; private set; }
 
         protected List<KeyValuePair<LogLevel, string>> Logs { get; private set; }
+
+        /// <summary> New line </summary>
+        protected static string nl = Environment.NewLine;
 
         public BaseTests()
         {
@@ -50,5 +57,26 @@
         }
 
         #endregion
+
+        protected FilterItem GetTestFilterItem()
+        {
+            return new FilterItem
+            {
+                FieldName = "Id",
+                LogicalComparisonType = ComparisonType.None,
+                Value = string.Empty,
+                Name = "Test"
+            };
+        }
+
+        protected FilterGroup GetTestFilterGroup()
+        {
+            return new FilterGroup
+            {
+                Name = "Test",
+                LogicalJoinType = FilterJoinType.None,
+                Items = new FilterItem[] { GetTestFilterItem() }
+            };
+        }
     }
 }

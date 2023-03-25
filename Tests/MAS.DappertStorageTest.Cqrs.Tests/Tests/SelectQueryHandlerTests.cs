@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using MAS.DapperStorageTest.Infrastructure.Sql;
     using MAS.DapperStorageTest.Models;
 
     using Xunit;
@@ -59,8 +60,7 @@
             FilterBuilderSqlResult = "(TEST)";
             var entityName = nameof(Passenger);
             var columns = Enumerable.Empty<string>();
-            var testedQueryFilterItem = new QueryFilterItem("Test", nameof(Passenger.Id), string.Empty, ComparisonType.None);
-            var testedFilterGroup = new QueryFilterGroup(nameof(Passenger), "Test", FilterJoinType.None, new QueryFilterItem[] { testedQueryFilterItem });
+            var testedFilterGroup = GetTestFilterGroup();
             var expectedArguments = Enumerable.Empty<KeyValuePair<string, object>>();
             var expectedSqlQuery = "SELECT * FROM [Passenger] WHERE (TEST)";
             var query = new SelectQuery(entityName, columns, testedFilterGroup, null, 0, 10);
@@ -115,8 +115,7 @@
             var entityName = nameof(Passenger);
             var columns = Enumerable.Empty<string>();
             var orderColumns = new[] { new OrderOption(nameof(Passenger.MiddleName), OrderDirection.Ascending), new OrderOption(nameof(Passenger.LastName), OrderDirection.Ascending) };
-            var testedQueryFilterItem = new QueryFilterItem("Test", nameof(Passenger.Id), string.Empty, ComparisonType.None);
-            var testedFilterGroup = new QueryFilterGroup(nameof(Passenger), "Test", FilterJoinType.None, new QueryFilterItem[] { testedQueryFilterItem });
+            var testedFilterGroup = GetTestFilterGroup();
             var expectedArguments = Enumerable.Empty<KeyValuePair<string, object>>();
             var expectedSqlQuery = "SELECT * FROM [Passenger] WHERE (TEST) ORDER BY [MiddleName] ASC, [LastName] ASC, [Id] ASC OFFSET 15 ROWS FETCH NEXT 15 ROWS ONLY";
             var query = new SelectQuery(entityName, columns, testedFilterGroup, orderColumns, 15, 15);

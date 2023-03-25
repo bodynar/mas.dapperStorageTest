@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using MAS.DappertStorageTest.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
 
     /// <summary>
     /// Filter group configuration
@@ -35,17 +35,29 @@
         /// </summary>
         public IEnumerable<ApiFilterGroup> InnerGroups { get; set; } = Enumerable.Empty<ApiFilterGroup>();
 
-        public static implicit operator QueryFilterGroup(ApiFilterGroup apiFilterGroup)
+        public static implicit operator FilterGroup(ApiFilterGroup apiFilterGroup)
         {
             if (apiFilterGroup == null)
             {
                 return null;
             }
 
-            return
-                apiFilterGroup.InnerGroups.Any()
-                ? new QueryFilterGroup(apiFilterGroup.EntityName, apiFilterGroup.Name, apiFilterGroup.FilterJoinType, apiFilterGroup.InnerGroups.Select(x => (QueryFilterGroup)x))
-                : new QueryFilterGroup(apiFilterGroup.EntityName, apiFilterGroup.Name, apiFilterGroup.FilterJoinType, apiFilterGroup.Filters.Select(x => (QueryFilterItem)x));
+            if (apiFilterGroup.InnerGroups.Any())
+            {
+                return new FilterGroup()
+                {
+                    Name = apiFilterGroup.Name,
+                    LogicalJoinType = apiFilterGroup.FilterJoinType,
+                    NestedGroups = apiFilterGroup.InnerGroups.Select(x => (FilterGroup)x)
+                };
+            }
+
+            return new FilterGroup()
+            {
+                Name = apiFilterGroup.Name,
+                LogicalJoinType = apiFilterGroup.FilterJoinType,
+                Items = apiFilterGroup.Filters.Select(x => (FilterItem)x)
+            };
         }
     }
 }

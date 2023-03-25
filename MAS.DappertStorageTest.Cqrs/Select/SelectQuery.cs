@@ -5,6 +5,8 @@
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
+    using MAS.DapperStorageTest.Infrastructure.Sql;
 
     public class SelectQuery : IQuery<SelectQueryResponse>
     {
@@ -16,11 +18,11 @@
 
         public IEnumerable<string> Columns { get; }
 
-        public QueryFilterGroup FilterGroup { get; }
+        public FilterGroup FilterGroup { get; }
 
         public IEnumerable<OrderOption> OrderingColumns { get; }
 
-        public SelectQuery(string entityName, IEnumerable<string> columns, QueryFilterGroup filterGroup, IEnumerable<OrderOption> orderingColumns, int count, int offset)
+        public SelectQuery(string entityName, IEnumerable<string> columns, FilterGroup filterGroup, IEnumerable<OrderOption> orderingColumns, int count, int offset)
         {
             EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
             Columns = columns ?? Enumerable.Empty<string>();

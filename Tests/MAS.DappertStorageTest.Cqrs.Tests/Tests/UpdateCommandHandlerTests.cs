@@ -31,18 +31,6 @@
         }
 
         [Fact]
-        public void ShouldThrowFilterExceptionWhenFilterIsEmpty()
-        {
-            var entityName = nameof(Passenger);
-            var propertyValues = new Dictionary<string, string>() { { "FirstName", "NewValueFirstName" }, { "LastName", "NewValueLastName" } };
-
-            var command = new UpdateCommand(entityName, propertyValues, EmptyFilterGroup);
-            var handler = new UpdateCommandHandler(DbConnectionFactory, DbAdapter, new MySqlFilterBuilder(null));
-
-            ShouldThrowFilterExceptionWhenFilterIsEmptyInternal(command, handler);
-        }
-
-        [Fact]
         public void ShouldGenerateSqlQueryWithoutWarnings()
         {
             FilterBuilderSqlResult = "(TEST)";

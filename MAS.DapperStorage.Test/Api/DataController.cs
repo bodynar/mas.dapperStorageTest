@@ -6,6 +6,7 @@
 
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.Sql;
     using MAS.DapperStorageTest.Models;
     using MAS.DappertStorageTest.Cqrs;
 

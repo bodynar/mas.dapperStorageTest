@@ -4,6 +4,7 @@
 
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
 
     public abstract class BaseCommandHandler<TCommand> : BaseCqrsHandler, ICommandHandler<TCommand>
         where TCommand : ICommand

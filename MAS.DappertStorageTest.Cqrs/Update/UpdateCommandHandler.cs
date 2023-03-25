@@ -1,10 +1,10 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class UpdateCommandHandler : BaseCommandHandler<UpdateCommand>
@@ -30,17 +30,14 @@
 
             var (whereSqlStatement, arguments) = FilterBuilder.Build(command.FilterGroup);
 
-            if (string.IsNullOrEmpty(whereSqlStatement) || arguments == null || !arguments.Any())
-            {
-                throw new FilterException(CommandType, "Filter is not constructed properly.");
-            }
+            var commandArgs = arguments.ToDictionary(x => x.Key, x => x.Value);
 
             var setStatement =
                 string.Join(", ",
                     fields.Select(field =>
                     {
                         var argumentKey = $"UpdateEntity{field.Key}";
-                        arguments.TryAdd(argumentKey, field.Value);
+                        commandArgs.TryAdd(argumentKey, field.Value);
 
                         return $"[{field.Key}] = @{argumentKey}";
                     })
@@ -48,7 +45,7 @@
 
             var updateDate = DateTime.UtcNow;
 
-            arguments.TryAdd("UpdateEntityModifiedOn", updateDate);
+            commandArgs.Add("UpdateEntityModifiedOn", updateDate);
             setStatement += $", [ModifiedOn] = @UpdateEntityModifiedOn";
 
             var sqlQuery = BuildQuery($"UPDATE [{command.EntityName}] SET {setStatement} WHERE {whereSqlStatement}");
@@ -56,7 +53,7 @@
 
             using (var connection = DbConnectionFactory.CreateDbConnection())
             {
-                result = DbAdapter.Execute(connection, sqlQuery, arguments);
+                result = DbAdapter.Execute(connection, sqlQuery, commandArgs);
             }
 
             command.RowsAffected = result;

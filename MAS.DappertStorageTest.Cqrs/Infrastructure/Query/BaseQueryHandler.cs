@@ -2,6 +2,7 @@
 {
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
 
     public abstract class BaseQueryHandler<TQuery, TResult> : BaseCqrsHandler, IQueryHandler<TQuery, TResult>
         where TQuery : IQuery<TResult>
