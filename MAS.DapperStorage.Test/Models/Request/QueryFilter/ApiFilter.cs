@@ -1,6 +1,6 @@
 ﻿namespace MAS.DapperStorageTest.Models
 {
-    using MAS.DappertStorageTest.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
 
     /// <summary>
     /// Filter item configuration
@@ -27,9 +27,15 @@
         /// </summary>
         public ComparisonType ComparisonType { get; set; }
 
-        public static implicit operator QueryFilterItem(ApiFilter apiFilter)
+        public static implicit operator FilterItem(ApiFilter apiFilter)
         {
-            return new QueryFilterItem(apiFilter.Name, apiFilter.FieldName, apiFilter.Value, apiFilter.ComparisonType);
+            return new FilterItem
+            {
+                FieldName = apiFilter.FieldName,
+                Value = apiFilter.Value,
+                LogicalComparisonType = apiFilter.ComparisonType,
+                Name = apiFilter.Name,
+            };
         }
     }
 }

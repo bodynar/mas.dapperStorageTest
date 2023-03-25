@@ -4,6 +4,8 @@
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
+    using MAS.DapperStorageTest.Infrastructure.Sql;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class SelectQueryHandler : BaseQueryHandler<SelectQuery, SelectQueryResponse>

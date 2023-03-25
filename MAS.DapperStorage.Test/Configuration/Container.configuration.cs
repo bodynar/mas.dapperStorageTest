@@ -2,7 +2,8 @@
 {
     using MAS.DapperStorageTest.Infrastructure;
     using MAS.DapperStorageTest.Infrastructure.Cqrs;
-    using MAS.DappertStorageTest.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder.Implementations;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     using Microsoft.Extensions.Configuration;
@@ -26,7 +27,7 @@
             container.Register<IResolver, Resolver>(Lifestyle.Singleton);
             container.Register<IDbAdapter, DapperDbAdapter>(Lifestyle.Singleton);
             container.Register<IDbConnectionFactory>(() => new DbConnectionFactory(connectionString, dbName, queryOptions), Lifestyle.Singleton);
-            container.Register<IFilterBuilder, MySqlFilterBuilder>();
+            container.Register<IFilterBuilder, MsSqlFilterBuilder>();
             container.Register<ILogger, Logger>(Lifestyle.Singleton);
 
             container.Register(

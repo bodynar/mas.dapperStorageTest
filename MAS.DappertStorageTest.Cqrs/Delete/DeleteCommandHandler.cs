@@ -1,8 +1,7 @@
 ﻿namespace MAS.DappertStorageTest.Cqrs
 {
-    using System;
-
     using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
     using MAS.DappertStorageTest.Cqrs.Infrastructure;
 
     public class DeleteCommandHandler : BaseCommandHandler<DeleteCommand>

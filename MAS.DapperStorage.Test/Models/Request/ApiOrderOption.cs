@@ -1,6 +1,6 @@
 ﻿namespace MAS.DapperStorageTest.Models
 {
-    using MAS.DappertStorageTest.Cqrs;
+    using MAS.DapperStorageTest.Infrastructure.Sql;
 
     /// <summary>
     /// Order configuration

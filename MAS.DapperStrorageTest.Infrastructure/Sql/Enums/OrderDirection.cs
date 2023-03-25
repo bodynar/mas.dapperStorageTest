@@ -1,4 +1,4 @@
-﻿namespace MAS.DappertStorageTest.Cqrs
+﻿namespace MAS.DapperStorageTest.Infrastructure.Sql
 {
     public enum OrderDirection
     {

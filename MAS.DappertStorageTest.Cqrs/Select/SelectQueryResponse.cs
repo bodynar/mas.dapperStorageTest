@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using MAS.DapperStorageTest.Infrastructure.Sql;
+
     public class SelectQueryResponse
     {
         public string EntityName { get; }

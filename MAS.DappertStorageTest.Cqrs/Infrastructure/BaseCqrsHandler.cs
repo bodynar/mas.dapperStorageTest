@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Dynamic;
     using System.Linq;
 
     using MAS.DapperStorageTest.Infrastructure;
+    using MAS.DapperStorageTest.Infrastructure.FilterBuilder;
     using MAS.DapperStorageTest.Models;
 
     public abstract class BaseCqrsHandler
@@ -78,7 +78,7 @@
             return $"USE [{DbConnectionFactory.DatabaseName}];{Environment.NewLine}{queryPart}";
         }
 
-        protected (string, ExpandoObject) BuildWhereFilter(string entityName, QueryFilterGroup filter)
+        protected (string sqlCondition, IReadOnlyDictionary<string, object> sqlArguments) BuildWhereFilter(string entityName, FilterGroup filter)
         {
             var filterFieldNames = GetFilterFiledNames(filter);
 
@@ -119,13 +119,13 @@
             return DeclaredEntities.Contains(entityName);
         }
 
-        private IEnumerable<string> GetFilterFiledNames(QueryFilterGroup queryFilter)
+        private IEnumerable<string> GetFilterFiledNames(FilterGroup queryFilter)
         {
             var fieldNames = new List<string>();
 
-            if (queryFilter.InnerGroups.Any())
+            if (queryFilter.NestedGroups.Any())
             {
-                foreach (var filterItem in queryFilter.InnerGroups)
+                foreach (var filterItem in queryFilter.NestedGroups)
                 {
                     var innerFieldNames = GetFilterFiledNames(filterItem);
                     fieldNames.AddRange(innerFieldNames);
@@ -133,7 +133,7 @@
             }
             else
             {
-                fieldNames.AddRange(queryFilter.Filters.Select(x => x.FieldName));
+                fieldNames.AddRange(queryFilter.Items.Select(x => x.FieldName));
             }
 
             return fieldNames.Distinct().OrderBy(x => x);
